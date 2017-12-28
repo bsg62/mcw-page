@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ruby ist da</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/01/ruby-ist-da.html" class="post__headline__link">Ruby ist da</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-01-11T18:00:50Z" class="post-date">11. January 2008</time>
+    </p>
+    <div class="post__content">
+        <p>&apos;Ruby&apos; ist der neue Codename für mcw[blog] 2.0. Das Benennungsschema wollte ich ja schon lange ändern, aber mir ist nie etwas vernünftiges eingefallen.</p>
+
+<p>Lustigerweise entstand &apos;Ruby&apos; durch den Nachfolger &apos;Sapphire&apos; (wahrscheinlich Version 3). Inzwischen haben sich so viele Ideen angesammelt, was ich noch besser machen kann, das es nicht mehr sinnvoll ist, es noch in der kommenden Version umzusetzen.</p>
+
+<p>Die Core-App bekommt ein komplett neues Konzept, das an deutlich stärker bzw. ausschließlich objektorientiert sein wird. Soweit es PHP 5.3, evtl. auch schon 6.0 zulassen wird. Die Datenbankschnittstelle z.B. wird nur noch auf MySQLi basieren, um Sicherheits-Features wie mysqli::prepare() nutzen zu können.</p>
+
+<p>Im Gegensatz zu &apos;Ruby&apos; und &apos;miau10&apos; wird das Datenbank-Schema größtenteils unverändert bleiben, da ich mit der aktuellen Struktur sehr zufrieden bin und sie zukunftssicher ist. Dazu wird nur noch MySQL 5 unterstützt, unter anderem wegen der Views im Zusammenspiel mit der Multi-Weblog-Funktion.</p>
+
+<p>Insgesamt betreffen die meisten Ideen &#8211; bisher &#8211; die Core-App, an den eigentlichen Modulen wird sich intern wenig ändern. Nur die Models müssen den neuen Gegebenheiten angepasst werden.</p>
+
+<p>&apos;Sapphire&apos; wird ein wichtiger Schritt in Richtung objektorientierter Vorhölle für prozedurale Web-Programmierer. Trotz der Einschränkungen, dass nur die wenigsten PHP-Kernfunktionen als (brauchbare) Klassen zur Verfügung stehen.</p>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spaß mit jQuery</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/06/spas-mit-jquery.html" class="post__headline__link">Spaß mit jQuery</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-06-19T00:35:18Z" class="post-date">19. June 2008</time>
+    </p>
+    <div class="post__content">
+        <p>Das letzte meiner <a href="2008/06/jquery-beispiele.html">jQuery-Beispiele</a> beschäftigt sich ja damit, externen Links ein Icon und target=&#8220;_blank&#8220; zu verpassen. Mit allem drum und dran umfasst die Funktion zehn Zeilen Code. Dank ein paar Tricks und der wunderbaren CSS-Selektor-Syntax, geht das ganze aber auch in einer einzigen Zeile:</p>
+
+<pre name="code" class="js">$('#content .post a:not([href^="' + $('base').attr('href') + '"])[href^="http://"]').css('background', 'url(' + templateURL + 'img/shape_move_forwards.png) no-repeat right 1px').css('padding-right', '20px').attr('title', 'Externer Link').attr('target', '_blank');</pre>
+
+<p>Es werden also alle a-Element der Klasse &#8222;post&#8220; innerhalb der ID &#8222;content&#8220; angewählt, die nicht mit der Basis-URL, aber dafür mit &#8222;http://&#8220; beginnen. So wird sichergestellt, dass alle externen Links erwischt werden, aber z.B. relative interne Links (die <a href="http://tinymce.moxiecode.com/">TinyMCE</a> gerne macht) oder ID-Aufrufe nicht betroffen sind.</p>
+
+<p>Allen betroffenen Elementen wird nun das Icon als Hintergrundbild zugewiesen, ein entsprechendes Padding gesetzt, sowie das title- und target-Attribut.</p>
+
+<p>Mit einer so effizienten und gleichzeitig einfachten Syntax zu arbeiten, macht einfach Spaß. Und so lange diese CSS-Selektoren noch nicht vollständig implementiert sind, hilft jQuery browser-unabhängig aus.</p>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

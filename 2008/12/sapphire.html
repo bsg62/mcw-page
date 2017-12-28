@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sapphire</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/12/sapphire.html" class="post__headline__link">Sapphire</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-12-29T18:46:47Z" class="post-date">29. December 2008</time>
+    </p>
+    <div class="post__content">
+        <p>Wie schon angekündigt, habe ich mit dem Umstieg auf Netbeans begonnen, Sapphire komplett neu zu schreiben. Der eigentliche Kern ist nahezu fertig und die ersten Module in Arbeit &#8211; ging alles wesentlich schneller als erwartet. Daher werde ich Ruby nicht mehr weiter entwickeln und die bestehenden Module umschreiben.</p>
+
+<p>Dinge, wie die Mandanten-Fähigkeit noch in Ruby zu integrieren, obwohl sie im Sapphire-Kern schon implementiert sind, ist sinnlos. Außerdem ermöglicht es die neue Struktur wesentlich schneller und besser, Änderungen am Hauptsystem vorzunehmen. Das Portieren der Ruby-Module sollte relativ schnell und unproblematisch laufen.</p>
+
+<p>Die wichtigsten Unterschied zwischen Ruby und Sapphire:</p>
+
+<ol>
+<li>Sapphire ist durchgängig objektorientiert, soweit es PHP 5 ermöglicht.</li>
+<li>Es werden ausschließlich Prepared SQL Statements über MySQLi oder PDO unterstützt.</li>
+<li>Die Fehler-Verwaltung läuft komplett über Exceptions (SPL und eigene).</li>
+<li>Bessere und nun vollständige Implementierung des MVC-Patterns.</li>
+<li>Alle Singleton-Patterns wurden entfernt.</li>
+<li>Mandantenfähig von Anfang an.</li>
+<li>Abstraktionsebene aller Superglobals.</li>
+<li>Alle assoziativen Arrays wurden durch Instanzen der Klasse Data ersetzt.</li>
+<li>Kleinere Änderungen an der Datenbank, u.a. für die Mandantenfähigkeit. (Ein Import-Script wie von Version 1 auf 2, ist nicht nötig.)</li>
+</ol>
+
+<p>Insgesamt bin ich mit bisherigen Stand sehr zufrieden. Vieles ist im Vergleich zu Ruby einfacher geworden, ganz besonders der Modul-Manager &#8211; bei gleichem Funktionsumfang braucht er nur knapp die Hälfte des Quelltexts. Es ist nun wesentlich einfacher, zu überprüfen, ob ein Modul schon geladen ist und an dessen Funktionen heran zu kommen. Zusammen mit einem zukünftig implementierten Observer-Pattern und der Factory des Kerns, ist das die neue Modul-Schnittstelle.</p>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

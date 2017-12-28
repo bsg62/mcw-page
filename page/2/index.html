@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="generator" content="Hugo 0.31.1" />
+    <title>madcats[welt]</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2012/03/schnellere-websites-mit-require-js.html" class="post__headline__link">Schnellere Websites mit RequireJS</a></h1>
+    <p class="post__meta">
+        <time datetime="2012-03-24T21:47:56Z" class="post-date">24. March 2012</time>
+    </p>
+    <div class="post__content">
+        <p>Mit diesem Eintrag beginnt meine kleine Serie über schnellere Websites. Im Rahmen dieser Reihe werde ich Strategien und praktische Maßnahmen vorstellen, um die Ladegeschwindigkeiten zu analysieren, Schwachpunkte zu finden und zu vermeiden.</p>
+
+<h3 id="warum-requirejs">Warum RequireJS?</h3>
+
+<p>In den meisten Programmiersprachen existieren Funktionen wie require(), #include oder import, um weitere Bestandteile eines Programms aus einer Datei bzw. eines Namespaces zu laden. In JavaScript gibt es solche Möglichkeiten bislang nicht. <a href="http://requirejs.org/">RequireJS</a> beseitigt dieses Problem. JavaScript-Dateien werden durch RequireJS asynchron nachgeladen, so dass mehrere Dateien parallel abgeholt werden können. Gleichzeitig ist es dadurch möglich, auf script-Element im Quelltext zu verzichten und damit das Rendern der Seite zu beschleunigen.</p>
+
+<p>Script-Elemente sind Blocker im Rendering-Prozess. Browser arbeiten den Quelltext einer Seite von oben nach unten durch. Wenn ein script-Element auftaucht, muss es erst ausgeführt werden, bevor der Browser sich um den nachfolgenden Quelltext kümmern kann. Externe JavaScripts können aus diesem Grund massiven Einfluss auf die Ladegeschwindigkeit einer Seite haben, auch wenn die eigentliche Website schon längst vom Web-Server an den Browser ausgeliefert wurde.</p>
+
+<p>Falls ein externes Script auf einem langsamen Server liegt, muss der Browser warten, bis er es komplett abgerufen und ausgeführt hat. Sollte das aufgerufene Script gar nicht mehr vorhanden sein, wartet der Browser seine Timeout-Einstellung ab, bis er weitermacht. Sicherlich hat jeder schon mal gesehen, dass eine Website nur bis einem gewissen Teil angezeigt wird und erst nach ein paar Sekunden der Rest dargestellt wird. Mit sehr hoher Wahrscheinlichkeit, war dies ein nicht mehr vorhandenes oder nur sehr langsam ladendes JavaScript.</p>
+
+<p>Asynchrones Abholen findet erst nach dem Rendern der Seite statt und blockiert daher nichts. Dazu lässt sich bei konsequentem Nutzen von RequireJS der Einsatz von script-Elementen weitgehend vermeiden. Im Idealfall gibt es nur noch ein script-Element, das RequireJS lädt und ein weiteres Script startet, um die gesamte JavaScript-Funktionalität einer Seite zu initialisieren.</p>
+
+<p></p>
+
+<h3 id="konfiguration">Konfiguration</h3>
+
+<p>Hier ein simples Beispiel einer Require-JS-Konfiguration mit jQuery:</p>
+
+<pre class="javascript">(function() {
+    require.config({
+        paths: {
+            'jquery': 'libs/jquery/jquery-1.7.1'
+        }
+    });
+
+    require(['jquery'], function(jQuery){
+      jQuery.noConflict();
+    });
+})();</pre>
+
+<p>Zuerst wird RequireJS so konfiguriert, dass <a href="http://jquery.com/">jQuery</a> mittels des Keywords &#8222;jquery&#8220; geladen werden kann. Im Konfigurations-Objekt &#8222;paths&#8220; wird dafür als Attributsname &#8222;jquery&#8220; und als Wert der Pfad (ausgehend vom Verzeichnis des Scripts) zu jQuery gesetzt. Anschließend wird require() aufgerufen und als erster Parameter wird ein Array mit den aufzulösenden Abhängigkeiten erwartet &#8212; hier jQuery. Man kann hier ein unter &#8222;paths&#8220; gesetztes Keyword, den Pfad oder auch externe JavaScripts über die URL angeben. Falls es sich um ein Modul handelt, wird auf die Dateiendung &#8222;.js&#8220; verzichtet.</p>
+
+<p>Im zweiten Parameter wird eine Callback-Funktion definiert, deren Aufruf unmittelbar nach dem Laden der Abhängikeiten stattfindet. Als Parameter folgen hier die Rückgaben der angeforderten JavaScript-Dateien. In diesem Fall ist es ein jQuery-Objekt, das sogleich in den No-Conflict-Modus versetzt wird, um nicht mit evtl. anderen geladenen Bibliotheken zu kollidieren. Dieses Verfahren ist besser bekannt als <a href="http://de.wikipedia.org/wiki/Dependency_Injection">Dependency Injection</a>.</p>
+
+<h3 id="module">Module</h3>
+
+<p>RequireJS bietet über die Modul-Definition eine elegante Lösung, Programmbestandteile zu kapseln und Abhängigkeiten (z.B. jQuery) aufzulösen. Aktuell setze ich hier drei Module ein, die Funktionen für einzelne Beiträge (Syntax Highlighting, Lightbox etc.) übernehmen sowie das Tracking über Piwik bzw. Google Analytics starten.</p>
+
+<p>Alle Module sind so aufgebaut, dass sie Abhängigkeiten in Form von Bibliotheken oder anderen Modulen erst auflösen, wenn sie gebraucht werden. Gleichzeitig stellt RequireJS sicher, dass eine Abhängikeit nur einmal geladen wird und für jedes andere Modul zur Verfügung steht.</p>
+
+<p>Ein Beispiel-Modul:</p>
+
+<pre class="javascript">define(['jquery'], function($) {
+    var exports = {};
+
+    exports.init = function() {
+        $('body').append('&lt;h1&gt;Hello World!&lt;/h1&gt;');
+    }
+
+    return exports;
+});</pre>
+
+<p>Mit define() wird die Moduldefinition gestartet. Anschließend passiert das gleiche, wie in der Funktion require(). Zuerst werden die Abhängigkeiten als Array definiert, danach startet eine Dependecy Injection in die Callback-Funktion. An dieser Stelle wird ein Dollarzeichen als Parameter für die Abhängigkeit verwendet, um jQuery wie gewohnt einsetzen zu können. Anschließend wird das Objekt &#8222;exports&#8220; mit der Methode init() erstellt und zurückgegeben. Wird das Modul an anderer Stelle über require() geladen und das exports-Objekt in die Callback-Funktion injiziert, kann man in ihr die init-Methode aufrufen und damit das Modul starten. Natürlich es ist aber auch möglich, darauf zu verzichten und innerhalb der Modul-Callback-Funktion direkt Code auszuführen.</p>
+
+<p>Um ein Modul an anderer Stelle mit require() zu laden, gibt man den Pfad, ausgehend vom Verzeichnis der RequireJS-Konfiguration, zum Modul an. Wie vorhin schon beschrieben, muss man hierbei auf die Dateiendung &#8222;.js&#8220; verzichten.</p>
+
+<p>Zu guter letzt muss RequireJS selbst samt Konfiguration geladen werden:</p>
+
+<pre class="html">&lt;script src="js/libs/require/require.js" data-main="js/config"&gt;&lt;/script&gt;</pre>
+
+<p>Ein simples Script-Element hierzu genügt &#8212; am besten unmittelbar vor dem schließenden body-Element. Zusätzlich wird mit dem Daten-Attribut &#8222;main&#8220; noch der Pfad zur Konfiguration mitgegeben. RequireJS bindet das entsprechende JavaScript automatisch ein und startet sie.</p>
+
+<h3 id="fazit">Fazit</h3>
+
+<p>RequireJS ist ein mächtiges Tool, das alleine schon durch die Kapselung in verschiedene Module dem Entwickler sehr viele Vorteile bringt. Durch die immer größer werdende Komplexität von Web-Sites bzw. Web-Applikationen sind andere Formen der Organisation notwendig geworden, die in anderen Programmiersprachen schon von Anfang an vorhanden waren.</p>
+
+<p>Dank der Module mit ihren von RequireJS automatisch aufgelösten Abhängigkeiten durch Dependency Injection, lassen sich schnell und einfach, neue Funktionalitäten in eine Website implementieren, ohne weitere script-Elemente in den HTML-Quelltext einfügen zu müssen.</p>
+
+<p>Bis auf RequireJS selbst werden alle definierten Abhängigkeiten bzw. Module asynchron geladen, ohne das Rendern der Seite zu blockieren. Da Browser asynchrone Anfragen parallel abarbeiten können, werden insgesamt alle Scripts schneller geladen und früher ausgeführt, als es bei einer traditionellen Verwendung von JavaScript möglich wäre.</p>
+
+<p>Das Ergebnis ist ein großer Vorteil für alle Beteiligten. Für den Nutzer wird eine Website mit viel JavaScript deutlich schneller dargestellt, während die Funktionalitäten im Hintergrund nachgeladen werden, ohne dass man etwas davon bemerkt. Aus Sicht der Entwickler bietet RequireJS eine elegante Möglichkeit, schnelle neue Funktionen zu entwickeln, Abhängigkeiten einfach aufzulösen und durch die Module strukturierter zu arbeiten.</p>
+
+<p>Abgesehen von TypeKit und Disqus laufen alle JavaScript-Bestandteile dieser Seite als Modul. Zwar lässt sich TypeKit problemlos als Modul umsetzen, nur werden die Schriften erst nach dem Rendern der Seite geladen. Für etwa eine halbe Sekunde sind die Fallback-Schriften zu sehen, erst dann die über TypeKit-Schriften dargestellt. Da das nicht Sinn und Zweck von TypeKit und Euch Leser irritiert, wird TypeKit klassisch im head-Element vor den Stylesheets geladen.</p>
+
+<p>Disqus ist dagegen als WordPress-Plug-In eingebunden und darauf würde ich auch nur sehr ungern verzichten. Ich könnte das Plug-In zwar anpassen, aber damit wäre die Update-Fähigkeit dahin. Da Disqus seine Scripts selbst asynchron lädt, sehe ich auch keine Notwendigkeit, den ganzen Aufwand zu betreiben und Module zu schreiben. Allerdings habe ich andere Plug-Ins wie die Lightbox und das Syntax Highlighting rausgeworfen und durch RequireJS-Module ersetzt, die nun fester Bestandteil des Themes sind. Geladen werden sie aber nur, wenn auch Beiträge vorhanden sind, die eine der Funktionen brauchen.</p>
+
+<p>Falls ich Euch Interesse zu RequireJS geweckt habe, könnt Ihr meine Implementierung inkl. eine Ladesystems für Module aus dem HTML-Quelltext heraus im <a href="https://github.com/MadCatme/mcw-blue">GitHub-Repository meines WordPress-Themes</a> anschauen oder auch einen Fork erstellen, um damit selbst entwickeln zu können. Falls jemand Ideen oder Verbesserungen hat, ich freue mich über jede Anregung und jeden Pull-Request in GitHub.</p>
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2012/03/sublime-text-2.html" class="post__headline__link">Sublime Text 2</a></h1>
+    <p class="post__meta">
+        <time datetime="2012-03-17T23:16:23Z" class="post-date">17. March 2012</time>
+    </p>
+    <div class="post__content">
+        <p>Als Entwickler ist man ja immer auf der Suche nach noch besseren Werkzeugen, um seine Arbeit schneller, besser und schöner zu erledigen. Das wichtigste Tool dafür ist ein guter Editor. Unter OS X setzte ich immer auf <a href="http://macromates.com/">TextMate</a> und falls kein Mac zur Verfügung stand, war <a href="http://notepad-plus-plus.org/">Notepad++</a> unter Windows das Mittel der Wahl.</p>
+
+<p>Leider wird TextMate kaum noch weiterentwickelt. Der letzte Release ist Monate her und TextMate 2 grenzt schon fast an Vaporware. Im Büro (sowohl früher als auch jetzt bei <a href="http://www.chip.de/">Chip</a>) habe ich nun seit über einem halben Jahr auch einen Mac, daher kommt Notepad++ nicht als Alternative in Frage. Diverse Versuche mit Wine bzw. WineBottler haben sich als Schuss in den Ofen erwiesen.</p>
+
+<p>Zu meinem großem Glück bin ich dann zufällig über <a href="http://www.sublimetext.com/2">Sublime Text 2</a> gestolpert. Zuerst dachte ich, es wäre nur ein billiger TextMate-Klon, aber weit gefehlt. Das Ding ist richtig toll.</p>
+
+<p>Warum? Darum:</p>
+
+<ul>
+<li>Läuft unter OS X, Windows und sogar Linux.</li>
+<li>Kann von Haus aus eine Menge, ohne überladen zu sein (gutes Syntax-Highlighting, umfangreiche Suchfunktionen, Code-Folding, Code Completion etc.)</li>
+<li>Bis ins letzte Detail konfigurierbar (nur über JSON-Files, keine GUI bisher).</li>
+<li>Erweiterbar über sog. Packages, die es für so ziemlich alles gibt, von ActionScript über Git bis Zen Coding (ein Großteil der TextMate Bundles ist kompatibel!)</li>
+<li>Sehr schnell und keine Probleme mit extrem langen Zeilen (TextMate gerät da teilweise unglaublich ins Stocken bishin zum Absturz).</li>
+<li>Tabs (ja, die kann TextMate auch, aber nur innerhalb von Projekten).</li>
+<li>Regelmäßige Updates.</li>
+</ul>
+
+<p>Wie effizient man mit Sublime Text und ein paar kleinen Tools entwickeln kann, zeigt <a href="http://tarantsov.com/blog/2012/02/sublime-text-workflow-that-beats-coda-and-espresso/">Andrey Tarantsov in einem sehr schönen Video</a>. Da zeigt sich auch mal wieder, dass für Web-Entwickler OS X immer noch die beste Plattform ist &#8212; viele Tools gibt es für Windows schlichtweg nicht. Mal davon abgesehen, dass Arbeiten mit einem Terminal immer noch eine Qual ist. <a href="http://www.cygwin.com/">Cygwin</a> ist hier zwar ein Segen, aber auch nicht allmächtig, da es nicht für alles wichtige kompatible Versionen gibt (Stichwort Ruby Gems &#8230;).</p>
+
+<p> </p>
+
+<p>Da Sublime Text 2 Shareware ist und beliebig lange getestet werden kann, rate ich jedem Entwickler ihn zumindest auszuprobieren &#8212; es lohnt sich. Und wer schon immer einen TextMate-ähnlichen Editor für Windows oder Linux gesucht hat: hier ist er!</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2012/03/upload-probleme-mit-fastcgi.html" class="post__headline__link">Upload-Probleme mit FastCGI</a></h1>
+    <p class="post__meta">
+        <time datetime="2012-03-17T16:07:57Z" class="post-date">17. March 2012</time>
+    </p>
+    <div class="post__content">
+        <p>Als ich eben die neue Galerie hochladen wollte, begrüßte mich bei jedem Versuch ein HTTP 500, besser bekannt als Internal Server Error. Die Meldung ist absolut nichtssagend und es lässt nur über Log-Dateien rausfinden, was eigentlich passiert.</p>
+
+<p>Das Problem besteht offenbar seit dem Umzug auf einen virtuellen Server bei <a href="http://www.hosteurope.de/">Host Europe</a> mit Ubuntu 10.04 LTS und Plesk zur Verwaltung. In Plesk wird PHP standardmäßig via mod_php in den Apache eingebunden. Da das aber u.U. Rechteprobleme zwischen dem Apache-User und dem FTP-User bei von PHP angelegten Dateien geben kann, lasse ich PHP via FastCGI laufen. Das braucht zwar mehr RAM, hat aber den Vorteil, dass der PHP-Prozess und FTP-Zugang über den gleichen Nutzer laufen. Im Gegensatz zu suPHP funktionieren damit auch Opcode Caches wie APC und es muss nicht für jede Anfrage auf ein Script ein neuer PHP-Prozess gestartet werden.</p>
+
+<p>Nach etwas Recherche, war die Ursache aber schnell klar. Um mit FastCGI arbeiten zu können, verwendet der Apache das Modul mod_fcgid, das folgenden Fehler auslöst:</p>
+
+<pre name="code" class="php">mod_fcgid: HTTP request length 1019250 (so far) exceeds MaxRequestLen (131072)
+</pre>
+
+<p>Sprich: sämtliche HTTP-Anfragen, deren Länge mehr als 128 KB beträgt, werden durch FastCGI nicht zugelassen. Wie man sieht, war der Request knapp 1 MB groß, was bei größeren Bildern in ordentlicher Qualität schnell passiert.</p>
+
+<p>Um das Limit zu erhöhen, muss man in die Modul-Konfiguration unter /etc/apache2/mods-available/fcgid.conf eingreifen und folgenden Eintrag hinzufügen bzw. entsprechend verändern:</p>
+
+<pre name="code" class="php">MaxRequestLen 2097152
+</pre>
+
+<p>Damit wird die Beschränkung auf 2 MB erhöht. Sollte für die meisten Zwecke mehr als ausreichen. Anschließend muss der Apache neu gestartet werden, damit die Änderung wirksam wird.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2012/02/neues-altes-theme.html" class="post__headline__link">Neues, altes Theme</a></h1>
+    <p class="post__meta">
+        <time datetime="2012-02-29T21:40:30Z" class="post-date">29. February 2012</time>
+    </p>
+    <div class="post__content">
+        <p>Gerade eben habe ich auf ein neues Theme umgestellt. Das Design bleibt gleich, aber die Technik dahinter habe ich komplett ausgetauscht. Zuletzt war das Theme &#8222;Platform PagesLines&#8220; im Einsatz. Einerseits ist es sehr umfangreich ausgestattet und bietet extrem viele Konfigurationsmöglichkeiten. Damit einher kommen aber ein völlig überladener, tief verschachtelter Quelltext und ein recht großer PHP-Part, da viele Seitenteile durch zig Funktionen und Klassen erzeugt werden. Die Entscheidung das Theme neu zu schreiben viel mir daher nicht sonderlich schwer.</p>
+
+<p>Wie es sich heutzutage gehört, ist das Markup sehr flach gehalten und setzt auf <a href="http://dev.w3.org/html5/spec/Overview.html">HTML 5</a>. Um die Stylesheets schneller und effizienter zu entwickeln, setze ich auf das CSS-Framework <a href="http://compass-style.org/">Compass</a>. Dessen Grundlage ist das Framework <a href="http://sass-lang.com/">SASS</a>, das die Style-Schreiberei durch mögliche Verschachtelungen, Variablen, Berechnungen, Vererbung, Style-Templates (Mixins) deutlich vereinfacht. Dazu schreibt man einfach die Styles im SCSS-Format und SASS bzw. Compass erstellen aus daraus eine voll einsatzfähige CSS-Datei &#8212; auf Wunsch schon komplett minified bzw. compressed.</p>
+
+<p>Jedem, der viel mit CSS arbeitet, kann ich nur unbedingt empfehlen, sich Compass näher anzuschauen. Selbst nach nur kurzer Einarbeitung spart man sich enorm viel Arbeit und kann auch spätere Änderungen deutlich schneller vornehmen, besonders wenn es um Selektor-Gruppen geht.</p>
+
+<p>Für die Zukunft plane ich weitere Optimierungen, u.A. den Einsatz von <a href="http://stevesouders.com/controljs/">ControlJS</a>, das JavaScripts asynchron lädt und erst nach Rendern des DOMs ausführt. Zusätzlich möchte ich an die Anzahl der HTTP-Requests pro Seitenanruf auf ein absolutes Minimum reduzieren.</p>
+
+<p>Ziel des Ganzen ist, wie schon auch der Einsatz von <a href="http://aws.amazon.com/de/cloudfront/">Amazon CloudFront</a> als <a href="http://de.wikipedia.org/wiki/Content_Distribution_Network">CDN</a> und <a href="http://memcached.org/">memcached</a>, ein kleines, hoch performantes Spielzeug zu haben. Übung darin schadet nie, denn Ladezeiten haben einen sehr großen Einfluss darauf, ob ein Besucher bleibt oder nicht. Dazu plane in nächster Zeit auch einige Beiträge zu Strategien, Ladezeiten zu optimieren bzw. entsprechende Tutorials.</p>
+
+<p><a href="https://github.com/MadCatme/mcw-blue">Als kleines Schmankerl stelle ich das Theme mit allen notwendigen Dateien in ein öffentliches Github-Repository.</a></p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2012/01/quo-vadis-firefox.html" class="post__headline__link">Quo vadis, Firefox?</a></h1>
+    <p class="post__meta">
+        <time datetime="2012-01-14T19:10:33Z" class="post-date">14. January 2012</time>
+    </p>
+    <div class="post__content">
+        
+
+<p>Angeregt von einem <a href="http://www.chip.de/artikel/Firefox-10-11-und-12-Feature-Vorschau-fuer-den-Mozilla-Browser_53358770.html" target="_blank">Artikel</a> meines künftigen Arbeitgebers über die Weiterentwicklung von Firefox in den Versionen 10, 11 und 12, möchte ich ein paar Gedanken über die merkwürdige Prioritätenvergabe der Mozilla Foundation loswerden.</p>
+
+<p>Die Features der drei kommenden Versionen konzentrieren sich fast ausschließlich auf Komfort und die weitere Vereinheitlichung der Benutzeroberfläche. Natürlich sind dies bei einem Browser sehr wichtige Faktoren, aber meiner Meinung nach, hat Firefox viel größere Defizite, die Angriff genommen werden sollten.</p>
+
+<h3 id="projekt-electrolysis">Projekt Electrolysis</h3>
+
+<p>Wie der Name schon sagt, geht es um die Trennung des Ganzen in seine Bestandteile. Auf Firefox bezogen, soll das Projekt Electrolysis auf eine Aufspaltung des großen Firefox-Prozesses in mehrere Prozesse ermöglichen. Google setzt eine solche Architektur von Anfang an in Chrome ein. Es gibt einen Hauptprozess und für jeden geöffneten Tab einen weiteren Prozess. Desweiteren wird jedes Plug-In sowie jede Extension in je einen weiteren Prozess ausgelagert. Damit erreicht Google einen stabilen, effizienten Browser, der den Arbeitsspeicher nicht unnötig belastet und selbst bei einem Absturz eines Tabs, Plug-Ins etc.  immer noch weiterlaufen kann. Apple und Microsoft fanden diese Idee so gut, dass Safari 5 und der Internet Explorer 9 ein ähnliches Prozess-Modell verwenden.</p>
+
+<p>Mozilla wollte ebenfalls auf den Zug aufspringen und hat daher das Projekt Electrolysis ins Leben gerufen. Als ersten Schritt wurde die Ausgliederung von Plug-In-Prozessen in Angriff genommen, die mit Firefox 3.6.4 vor knapp 18 Monaten ihren Weg in die offiziellen Releases fand.</p>
+
+<p>Schritt 2 war die Teilung in den Hauptprozess und Einzelprozesse für die offenen Tabs. Da Mozilla offensichtlich keine Veranlassung sah, dass dieses Feature möglichst schnell in die Desktop-Version Einzug hält, wurde es zuerst in Fennec, die mobile Version von Firefox, implementiert &#8212;  durchaus sinnvoll, um mit den begrenzten Ressourcen effizient umzugehen. Seit März vergangenen Jahres ist Fennec im Android Market erhältlich. Viel getan hat sich seit dem nichts mehr. Die Projekt-Seite im Mozilla Wiki wurde zuletzt im April 2011 aktualisiert und auch an anderer Stelle finden sich kaum Hinweise, wie es mit der Entwicklung von Electrolysis weitergeht.</p>
+
+<p>In Anbetracht des hohen Speicherbedarfs von Firefox, insbesondere wenn Extensions im Spiel sind, finde ich es sehr schade, dass sich hier nicht mehr tut oder der Fortschritt nur sehr mangelhaft kommuniziert wird. Firefox würde enorm von der Prozess-Aufteilung profitieren, sei es in Sachen RAM-Verbrauch, als auch Stabilität und Geschwindigkeit.</p>
+
+<h3 id="javascript">JavaScript</h3>
+
+<p>Sicherlich kann man der Mozilla Foundation zu Gute halten, dass sich die JavaScript-Leistung seit dem Release von Firefox 4 und 9 signifikant verbessert hat, dennoch besteht nach wie vor großer Aufholbedarf gegenüber Chrome. Mit <a href="https://wiki.mozilla.org/Platform/Features/IonMonkey" target="_blank">IonMonkey </a>ist ein neuer <a href="http://de.wikipedia.org/wiki/Just-in-time-Kompilierung" target="_blank">JIT </a>in Arbeit, der das bestehende Konstrukt aus JägerMonkey bzw. TraceMonkey ablösen soll. Wie die Entwickler zugegeben haben, ist die aktuelle Architektur nur sehr schwer zu optimieren und daher wird IonMonkey zum Großteil komplett neu geschrieben.</p>
+
+<p>Diese Bestrebung ist sehr löblich und wird sicher auch Früchte tragen, aber sie kommt reichlich spät und wird zu dem auch viel Zeit in Anspruch nehmen. Wir können froh sein, wenn IonMonkey am Jahresende seinen Weg in die offiziellen Releases findet. Aber die Konkurrenz schläft nicht und Google hat schon ein paar mal bewiesen, dass sich massiv an der Performance-Schraube ihres eigenen JITs, V8, drehen können. Verbesserungen von 10 &#8211; 30% mit einem Release waren keine Seltenheit. Microsoft, Opera und Apple werden ebenfalls daran arbeiten die JavaScript-Leistung ihrer Browser deutlich zu verbessern.</p>
+
+<p>Firefox läuft hier Gefahr ins Hintertreffen zu geraten und daher sollten die Bestrebungen für IonMonkey unbedingt verstärkt werden. JavaScript ist heute unverzichtbarer Bestandteil der meisten Websites und Rich Internet Applications werden zunehmend wichtiger, insbesondere da Microsoft endlich eingesehen hat, dass der Internet Explorer technisch weiterkommen muss.</p>
+
+<h3 id="profile">Profile</h3>
+
+<p>Wenn Firefox sich seltsam verhält, oft abstürzt oder sich anderweitig unangenehm bemerkbar macht, wundern sich viele, dass eine Neuinstallation nichts bringt. Die Universalwaffe gegen Windows-Probleme versagt hier kläglich, weil die Nutzerdaten, Einstellungen und Extensions als separates Profil in den Anwendungsdaten bzw. im Home-Verzeichnis gespeichert werden und dort auch bleiben, wenn man den Browser deinstalliert. Wird Firefox neu installiert, greift er auf dasselbe Profil wie die vorherige Installation zu und hat daher auch die gleichen Probleme.</p>
+
+<p>Probleme mit den Profilen ziehen sich leider immer wieder quer durch die gesamte Geschichte von Firefox und gab es auch schon vorher in der Mozilla Suite &#8212; heute besser bekannt als SeaMonkey. Warum das so ist, ist bisher nicht klar geworden. Im Verlauf der Firefox-Entwicklung hat Mozilla in den Profilen einiges verändert.</p>
+
+<p>Vieles, was früher in simplen Text-Dateien gespeichert wurde, befindet sich heute in SQLite-Datenbanken. Damit konnte man z.B. Dinge wie die AwesomeBar, die intelligente Adressleiste, realisieren. Leider ergaben sich hierbei aber neue Probleme. Insbesondere die Browsing History wird sehr ausgedehnt gespeichert, damit aber sehr groß und mit der Zeit auch immer langsamer. Wer keine SSD sein Eigen nennt, kennt die teils langen Startzeiten von Firefox, die unmittelbar damit zusammenhängen. Selbst wenn das Fenster inzwischen geöffnet wurde und man etwas in die Adresszeile eingibt, kann es teilweise mehrere Sekunden dauern, bis überhaupt eine Reaktion erfolgt.</p>
+
+<p>Selbst neue, frische Profile sind manchmal kein Garant dafür, dass Firefox rund läuft. Erst letztens gab es in meinem Freundeskreis den Fall, dass der Browser mit einem ein paar Wochen alten Profil plötzlich regelmäßige Aussetzer hatte und nicht mehr reagierte. Erst ein ganz neues Profil beseitigte dieses Problem.</p>
+
+<p>All dies ist nur ein kleiner Teil mir bekannter Profilprobleme. Mozilla sollte daher schleunigst etwas dagegen unternehmen.</p>
+
+<h3 id="fazit">Fazit</h3>
+
+<p>Wie man unzweifelhaft sieht, hat Firefox viele technische Macken bishin zu wirklich großen Handicaps. Vielen Nutzern mag dies aktuell noch egal sein, weil sie nicht betroffen sind oder es ihnen egal ist, wie schnell ihr Browser ist. Derzeit ist auch der Erfolg von Chrome kein Anzeichen dafür, dass Firefox auf einem absteigenden Ast wäre. Der steigende Anteil von Chrome geht zum Großteil zu Lasten des Internet Explorers. Trotzdem sehe ich die Mozilla Foundation in der Pflicht endlich angemessen auf og. Problematiken zu reagieren.</p>
+
+<p>Wie bereits erwähnt, schläft die Konkurrenz nicht. Google hat mit Chrome eindrucksvoll gezeigt, wie man einen modernen, schlanken Browser entwickelt. Mozilla tut sich offenbar schwer, Firefox und Gecko entsprechend umzustellen, was für mich als Programmierer bedeutet, dass dort noch viele Altlasten mitgeschleppt werden (müssen). Daher wäre es wohl an der Zeit, einen Strich zu ziehen und vieles komplett neu anzugehen, wie es z.B. schon bei IonMonkey getan wird. Mit einem modernen Aufbau der Interna wäre Firefox zukunftssicher und Mozilla würde sich in der Weiterentwicklung sehr viel leichter tun.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2011/11/aktuelle-javascript-benchmarks.html" class="post__headline__link">Aktuelle JavaScript-Benchmarks</a></h1>
+    <p class="post__meta">
+        <time datetime="2011-11-05T21:52:49Z" class="post-date">5. November 2011</time>
+    </p>
+    <div class="post__content">
+        
+
+<p>Nach etwas über einem halben Jahr wird es wieder einmal Zeit, den JavaScript Engines der aktuellen Browser-Versionen auf den Zahn zu fühlen. Die Versionssprünge im Vergleich zu den <a href="https://www.madcatswelt.org/2011/03/javascript-benchmarks.html">letzten Benchmarks</a> sind beachtlich. Firefox ging von Version 3 (4 war noch Beta) auf 7, Chrome von 10 auf 15. Microsoft machte da einen vergleichsweise kleinen Schritt von 8 auf 9, während Apple und Opera bei ihren Hauptversionen 5 und 11 treu geblieben sind.</p>
+
+<p>Wie üblich dient als Testplattform mein Privatrechner mit folgender Spezifikation: Intel Core i5 750, 8 GB RAM, Intel X25 G2 80 GB und Windows 7 Professional x64 SP 1.</p>
+
+<p>Hier sind die Ergebnisse:</p>
+
+<p><img class="aligncenter size-full wp-image-798" title="js_benchmarks_v4_1" src="https://www.madcatswelt.org/wp-content/uploads/js_benchmarks_v4_1.png" alt="" srcset="https://www.madcatswelt.org/wp-content/uploads/js_benchmarks_v4_1.png 548w, https://www.madcatswelt.org/wp-content/uploads/js_benchmarks_v4_1-227x300.png 227w" sizes="(max-width: 548px) 100vw, 548px" /></p>
+
+<p>&nbsp;</p>
+
+<p>Es gibt auch dieses mal keinen klaren Gewinner, der sich alle drei Siege sichern konnte, aber Chrome 15 ist im Schnitt wieder die Nummer 1. Der Internet Explorer 9 mag zwar unter SunSpider der schnellste Kandidat sein, er verliert jedoch die anderen zwei Tests klar. Es liegt daher die Vermutung nahe, dass Microsoft hier einige Optimierungen vorgenommen hat &#8212; zumal sich an SunSpider schon länger nichts mehr getan hat.</p>
+
+<p>Wie man schön sehen kann, hat Apple im letzten halben Jahr wirklich Fortschritte mit der Nitro Engine gemacht. Safari hat sich von der roten Laterne ins Mittelfeld vorgekämpft und überholt nun Firefox in gleich zwei Disziplinen. Es bleibt abzuwarten, ob Apple den Vorsprung halten kann. Ab Firefox 9 wird Mozillas <a href="http://de.wikipedia.org/wiki/Just-in-time-Kompilierung">JIT</a> JägerMonkey durch <a href="http://en.wikipedia.org/wiki/Type_inference">Type Inference</a> bis zu 30% mehr Leistung bringen. Dazu befindet sich mit <a href="https://wiki.mozilla.org/Platform/Features/IonMonkey">IonMonkey</a> ein neuer JIT in Arbeit, der wahrscheinlich JägerMonkey und evtl. auch TraceMonkey ersetzen wird. IonMonkey wird eine andere, moderne Architektur besitzen und damit die Wartbarkeit als auch Optimierungsmöglichkeiten für die Entwickler deutlich verbessern.</p>
+
+<p>Bleibt noch Opera 11, der sich mal wieder sehr gut schlägt und die klare Nummer Zwei im Starterfeld ist.</p>
+
+<h3 id="fazit">Fazit</h3>
+
+<p>Chrome gewinnt &#8212; wie immer. Opera ist Zweiter und im weiteren Feld kämpft sich Safari an Firefox und Microsofts Internet Explorer vorbei.</p>
+
+<p>Ich bin gespannt, ob Microsoft mit dem Internet Explorer 10 wieder aufholen kann. Vielleicht sollte man in Redmond auch die Release-Zyklen überdenken. Alle anderen Hersteller können wesentlich schneller reagieren und optimieren, während Microsoft nur jährlich neue Major Releases bringen will. Wobei ich es für fraglich halte, ob wirklich jedes Jahr eine neue Version kommen wird.</p>
+
+<p>Natürlich haben theoretische Benchmarks in der Praxis weit weniger Relevanz. Meine aktuellen Experimente mit <a href="http://www.sencha.com/products/extjs/">ExtJS</a> zeigen sehr deutlich, dass bei <a href="http://de.wikipedia.org/wiki/Rich_Internet_Application">Rich Internet Applications</a> Firefox immer noch kein sonderlich gutes Bild abgibt. Das aufgebaute UI, das für eine RIA eh noch recht spartanisch ausgestattet ist, läuft in allen anderen Browsern wesentlich weniger träge und ruckelig. Gleiches lässt sich auf diverse andere JavaScript-lastige Seiten übertragen, z.B. GMail oder iCloud.</p>
+
+<p>JägerMonkey mit Type Inference, IonMonkey und die lang erwartete Integration des <a href="https://wiki.mozilla.org/Electrolysis">Electrolysis-Projekts</a> sind darum wichtiger denn je.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2011/10/iphone-akku-probleme.html" class="post__headline__link">iPhone Akku-Probleme</a></h1>
+    <p class="post__meta">
+        <time datetime="2011-10-31T20:00:13Z" class="post-date">31. October 2011</time>
+    </p>
+    <div class="post__content">
+        <p><img class="alignnone size-full wp-image-778" title="iOS 5" src="https://www.madcatswelt.org/wp-content/uploads/ios_5.png" alt="" srcset="https://www.madcatswelt.org/wp-content/uploads/ios_5.png 566w, https://www.madcatswelt.org/wp-content/uploads/ios_5-300x30.png 300w" sizes="(max-width: 566px) 100vw, 566px" /></p>
+
+<p>In schöner Regelmäßigkeit häufen sich bei Major Releases einer iOS-Version Probleme mit der Akku-Laufzeit, so auch dieses Jahr. Aktuell scheinen Besitzer eines iPhone 4S am stärksten gebeutelt zu sein, aber iPhone 4- und 3GS-Nutzer klagen teilweise über deutliche Einbußen. Damit dürfte klar sein, dass es sich primär um ein Software-Thema handelt.</p>
+
+<p>Wie <a href="http://9to5mac.com/2011/10/31/how-to-extend-battery-life-of-your-iphone-4s-by-disabling-setting-time-zone/">9to5Mac</a> berichtet, werden diese Störungen durch einen Teil des Ortungsdienstes versacht, namentlich dem Systemdienst &#8222;Zeitzone einstellen&#8220;. Er verbirgt sich in den Einstellungen unter &#8222;Ortungsdienste&#8220; &gt; &#8222;Systemdienste&#8220; (unterhalb der App-Liste).  Dort finden sich auch noch andere Hintergrund-Services, die Zugriff auf die GPS-Funktionen haben, ohne sich durch ein Icon in der Statusleite bemerkmar zu machen. Im selben Menü lässt sich allerdings festlegen, dass ein Icon angezeigt werden soll, wenn einer dieser Dienste gerade aktiv ist. Bis auf &#8222;Funknetzsuche&#8220; und &#8222;Kompasskalibrierung&#8220; habe ich alle deaktiviert, da ich sie schlichtweg nicht brauche. Ich kann jedem nur empfehlen, auch so zu handeln und die nicht benötigten Funktionen abzuschalten.</p>
+
+<p><img class="aligncenter size-full wp-image-779" title="ios_gps_system_services" src="https://www.madcatswelt.org/wp-content/uploads/ios_gps_system_services.png" alt="" srcset="https://www.madcatswelt.org/wp-content/uploads/ios_gps_system_services.png 320w, https://www.madcatswelt.org/wp-content/uploads/ios_gps_system_services-200x300.png 200w" sizes="(max-width: 320px) 100vw, 320px" /></p>
+
+<p>Zu den Auswirkungen auf die Akku-Leistung kann ich erst in einigen Tagen etwas sagen, aber nach den Aussagen von 9to5Mac, scheint sich die Laufzeit doch deutlich zu verbessern, wenn man derzeit große Verluste innerhalb kurzer Zeit hat. Es sollte sich allerdings auch bei normalem Verhalten positiv auswirken. Ortungsfunktionen gehören immer noch zu den größten Verbrauchern bei Smartphones.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2011/10/iphone-4s-eine-enttauschung-mitnichten.html" class="post__headline__link">iPhone 4S – eine Enttäuschung? Mitnichten!</a></h1>
+    <p class="post__meta">
+        <time datetime="2011-10-10T21:09:37Z" class="post-date">10. October 2011</time>
+    </p>
+    <div class="post__content">
+        
+
+<p><img class="alignnone size-full wp-image-762" title="iPhone 4S" src="https://www.madcatswelt.org/wp-content/uploads/iphone_4s.png" alt="" srcset="https://www.madcatswelt.org/wp-content/uploads/iphone_4s.png 566w, https://www.madcatswelt.org/wp-content/uploads/iphone_4s-300x30.png 300w" sizes="(max-width: 566px) 100vw, 566px" /></p>
+
+<p>Seit sechs Tagen darf man nun den ganzen Blödsinn über die angebliche Enttäuschung durch das iPhone 4S ertragen. Als vernunftbegabter Mensch, kann ich sowas nicht unkommentiert stehen lassen, weil ich sonst innerlich von der ganzen Idiotie wahnsinnig werde.</p>
+
+<h3 id="die-macht-der-illusion">Die Macht der Illusion</h3>
+
+<p>****Monatelang stapelten sich die Gerüchte zu einem iPhone 5. Die Presse, Fan-Seiten, selbsternannte Insider und Experten überschlugen sich mit immer neuen Meldungen. Als dann noch Fotos einer angeblichen Hülle auftauchten, die den Schluss zuließen, ein komplett neues, extrem flaches Design sei zu erwarten, waren die Erwartungen auf einem Höhenflug, der nur böse enden konnte.</p>
+
+<p>Ich kann mir nicht erklären, wie man ernsthaft glauben konnte, dass man ein iPhone mit allen Features, höherer Akku-Leistung und entsprechenden Antennen, in ein Gehäuse von der Tiefe eines iPod touch quetschen kann? Apples Ingenieure sind verdammt gut, aber keine Zauberer. Zwar wird dieser Grad der Miniaturisierung wohl in absehbarer Zeit möglich sein, aber noch befinden wir uns im Jahr 2011 und nicht 2015.</p>
+
+<p>Mit dem Ausblick auf solch dramatische Features, konnte ein neues iPhone nur enttäuschen. Ironischerweise ist dies aber nicht Apple und auch nicht dem iPhone 4S anzulasten. Schuld sind in erster Linie die Illusionen einer immer absurder werdenden Gerüchteküche, die von Apple nichts mehr als Wunder erwartet und sich ernüchtert abwendet, wenn sie merkt, dass am 1 Infinite Loop auch nur mit Wasser gekocht werden kann.</p>
+
+<p>In diesen Tagen wird auch gerne Apple die Schuld für die hohen Erwartungen zugeschoben. Fragt sich nur warum? Zwar ist bekannt, dass Apple immer wieder Gerüchte vorsichtig streut, aber sie werden diesen Wahnsinn kaum mit falschen Fakten befeuern. Offizielle Äußerungen gab es gar nicht. Selbst die Keynote wurde nur knapp eine Woche vorher angekündigt. Meine Damen und Herren, der Apfel ist, wie schon in der Bibel, unschuldig &#8230;</p>
+
+<p>Anstatt wild Märchen in die Welt zu setzen sowie sich selbst etwas vorzumachen, wäre es jetzt angebracht, sich auf realstische Vorstellungen zu besinnen und das iPhone 4S neutral zu beurteilen. Leider findet dies derzeit nur selten innerhalb der Medienwelt statt. Die breite Masse der potenziellen Käufer scheint sich aber von diversen Schmähartikeln nicht verblenden zu lassen, sonst wäre das iPhone 4S kaum ausverkauft.</p>
+
+<h3 id="hardware">Hardware</h3>
+
+<p>Während das Innenleben weitgehend positiv aufgenommen wurde, gab es immer wieder Kritik am Display. Es immer noch 3,5&#8243; groß, ein IPS-Panel und hat mit 326 ppi eine der höchsten Pixeldichten der gesamten Smartphone-Riege. Samsung, HTC &amp; Co. liefern sich aktuell eine regelrechte Größenschlacht, die frappierend an den Megapixel- und Zoom-Wahn bei Digitalkameras erinnert. Denn, auch hier wie da gilt: größer/mehr ist nicht automatisch besser.</p>
+
+<p>Neben meinem iPhone 4 besitze ich als Android-Gerät ein Galaxy S i9000 mit einem 4&#8243; SAMOLED-Display. Es löst deutlich geringer auf, was sich insbesondere bei Text durch das ungewöhnliche Pixelraster dieser OLED-Generation bemerkbar macht. Neuere Geräte besitzen oft bei größeren Displays die gleiche Auflösung. Zwar hat z.B. das Galaxy S2 mehr Subpixel, aber an die Pixeldichte und Bildqualität des IPS-Panels kommt es nicht ran. Das OLED-Pro-Argument Kontrast kommt an dieser Stelle nun meistens. Der bringt mir aber auch nichts, wenn er überzogen wird und dadurch die Farben viel greller wirken.</p>
+
+<p>Das größte Problem neben der Bildqualität, ist beim Display-Wettrüsten aber die teils schon absurde Größe. Touchscreens überhalb von vier Zoll lassen sich kaum vernünftig mit einer Hand bedienen. Von Alltagstauglichkeit kann da eigentlich keine Rede mehr sein, wenn man den oberen Teil des Bildschirms nur noch mit Mühe erreichen kann.</p>
+
+<p>Ich rechne es Apple hoch an, dass man sich nicht auf diesen Blödsinn einlässt und stattdessen auf eine bewährte Technik setzt, die immer noch der Maßstab ist, an dem sich alle anderen messen müssen. Zwar wird das Nexus Prime bzw. dessen Galaxy-Version ein 4,6&#8243; Display mit 720p anbieten, auf dem Markt sind aber beide Geräte noch nicht und solange ist das iPhone 4(S) die Messlatte.</p>
+
+<p>Mal ehrlich, braucht irgendjemand mehr als vier Zoll? Wir reden hier immer noch von einem Mobiltelefon und das soll es auch bleiben.</p>
+
+<h3 id="design">Design</h3>
+
+<p>Das kaum geänderte Aussehen des iPhone 4S, ist wohl der größte Kritikpunkt. Viele argumentieren damit, dass das iPhone ein Lifestyle-Produkt sei und daher jedes Jahr ein neues Design brauche, damit der Käufer allein durch das Zurschaustellen des aktuellen iPhones zeigen kann, ein neues Statussymbol zu haben. Denen kann ich jedenfalls nur raten, sich mit Apples Produktphilosphie zu beschäftigen.</p>
+
+<p>In erster Linie entwickelt Apple Geräte mit dem hohen Anspruch für jeden einfach und schnell bedienbar zu sein. Dazu greifen fast alle Apple-Produkt nahtlos ineinander, um dem Nutzer maximalen Komfort zu gewährleisten und den Alltag wirklich zu erleichtern. Ganz besonders die Software es Jahrgangs 20111, egal ob Mac OS 10.7, iOS 5 oder iCloud sind einzig und alleine darauf ausgerichtet &#8211; mit dem für Apple angenehmen Effekt, den Nutzer in das eigene Ökossystem zu binden.</p>
+
+<p>Wenn man nun ernsthaft glaubt, Apple würde ein erfolgreiches Design einfach ändern, damit ein paar Leute in der U-Bahn angeben können, der irrt gewaltig und erliegt der Illusion, dass den Apple-Käufern nur ums Design geht. Solche mag es zwar auch geben, aber ein Großteil der Kunden möchte Produkte, die ohne große Probleme einfach das tun, was sie sollen. Wenn sie dann auch noch schick aussehen und dazu intelligent konstruiert sind, um so besser.</p>
+
+<p>Ehrlich gesagt, empfinde ich es als dreist und frech, mich als Besitzer eines Apple-Geräts von fremden Leuten als Design- und Attenion-Whore bezeichen lassen zu müssen. Offenbar geht es vielen nicht in den Kopf, dass man Apple vorzieht, weil sie einem das Leben mit durchdachten und intelligenten Produkten erleichtern.</p>
+
+<p>Das soll nicht heißen, dass andere Produkte schlecht wären. Letztendlich muss jeder für sich die beste Lösung finden. Wenn das Android ist oder ein Black Berry, wer bin ich ihnen dann zu sagen, ihre Wahl wäre Mist? Ich werde niemanden zwingen meiner Meinung zu sein und ich kann Anderen nur raten, dies ebenfalls so zu halten. Fanboys aller Art sind einfach nur noch lästig und stiften Unfrieden.</p>
+
+<p>In diesem Sinne, wenn das nächste iPhone kommt, einfach realistisch bleiben und nicht gleich die Keule rausholen, wenn&#8217;s einem nicht passt oder man Apple nicht mag.</p>
+
+<p>&nbsp;</p>
+
+<h3 id="4s-for-steve">4S (For Steve)</h3>
+
+<p>Du hast durch Deine Visionen und Produkte mein Leben wirklich bereichert. Als Pendler sind mein iPhone und iPad tägliche und treue Begleiter, die mir die Zugfahrten erträglicher machen. Im Büro erleichtern mir der iMac und Lion die Arbeit. Das ist wirklicher Fortschritt, von dem wir früher oder später alle profitieren. Sei es durch Apple oder die Konkurrenz, die Du inspiriert hast. Ich hoffe, dass Dein Pioniergeist und Deine Inspirationen uns noch lange beflügeln werden.</p>
+
+<p>Mach&#8217;s gut, Steve &#8212; wo immer Du gerade bist.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2011/03/fukushima-oder-wie-die-presse-einen-gau-verursacht.html" class="post__headline__link">Fukushima oder wie die Presse einen GAU verursacht</a></h1>
+    <p class="post__meta">
+        <time datetime="2011-03-13T21:01:23Z" class="post-date">13. March 2011</time>
+    </p>
+    <div class="post__content">
+        <p><strong>Update 14.3.2011, 15:45:</strong>[</p>
+
+<p>Ein sehr lesenswerter Artikel über die Vorgänge Fukushima I Block 1. Die Erläuterungen stammen von Dr. Josef Oehmen, einem Forscher am MIT in Boston.]<a href="http://morgsatlarge.wordpress.com/2011/03/13/why-i-am-not-worried-about-japans-nuclear-reactors/">1</a></p>
+
+<p>&nbsp;</p>
+
+<p>Die deutsche Presse muss derzeit einen Dauer-Orgasmus haben. Ein Erdbeben bzw. Tsunami mit tausenden Toten und Obdachlosen ist so schon ein gefundenes Fressen, aber seit den Vorfällen im Kraftwerk Fukushima I gerät die eigentliche Tragödie immer mehr in den Hintergrund. Statt einer ausgewogenen Berichterstattung über alle Themen, wird immer mehr die Angst vor einem zweiten Tchernobyl geschürt.</p>
+
+<p>Man kramt fleißig im Archiv, um die Zuschauer mit Dokumentation zu dem havarierten Reaktor 4 einem nuklearen Dauerfeuer auszusetzen. Alleine am gestrigen Samstag, während der beinahe halbstündlichen Unterbrechung der Wintersport-Übertragung des ZDF mit einem &#8222;heute spezial&#8220;, wurde immer das Thema Tchernobyl hochgehalten. Der Beitrag war eine schnelle, schlecht rechierchte Arbeit, die Fakten verdreht oder weggelassen hat. Niemand hielt es für nötig zu erwähnen, dass ein RBMK-Reaktor ganz anders funktioniert, als ein Siedewasserreaktor westlicher Bauart oder gar, dass die Bauweise der RBMK-Reihe kein Containment vorsieht.</p>
+
+<p>Als am frühen vormittag unserer Zeit das Dach der Reaktorhalle von Fukushima I Block 1 explodierte, meinten die meisten, der zahlreich angekarrten Experten, dass nun der GAU eingetreten sei und massenhaft radioaktive Spaltprodukte freigesetzt würden. Besonders toll fand man dabei den Ausdruck &#8222;weiße Wolke&#8220; (die eigentlich grau war) und wohl zum Großteil aus Betonstaub bestand. An Vergleichen zu 1986 wurde nicht gespart, obwohl kaum jemand weiß, wie es damals überhaupt ausgesehen hatte. Dazu kommt, dass es eben kein Containtent und auch keinen Reaktordruckbehälter (RBMK-Reaktoren arbeiten mit Druckröhren, siehe <a href="http://de.wikipedia.org/wiki/RBMK" target="_blank">Wikipedia</a>) gab. Die Folgen einer Explosion in Fukushima I Block 1 waren daher in keinster Weise absehbar &#8212; man wusste ja nicht mal, was dort detoniert ist.</p>
+
+<p>Aufgrund der Ereignisse strich die ARD am Samstag abend die Live-Übertragung der Jubiläumssendung des Musikantenstadls. Unabhängig davon, ob diese Sendung nun mag oder nicht, halte ich das für maßlos übertrieben. Erst recht, wenn man stattdessen noch eine Dokumentation über Tchernobyl bringt.</p>
+
+<p>In Mainz entschloss man sich ebenfalls zu Programmänderungen, so wurde z.B. heute statt Terra X eine einstündige Sondersendung ausgestrahlt. Man muss sich fast wundern, dass die Sportübertragungen nicht abgebrochen wurden und man sich nicht über die Gold-Freude von <a href="http://de.wikipedia.org/wiki/Magdalena_Neuner" target="_blank">Magdalena Neuner</a> und <a href="http://de.wikipedia.org/wiki/Jenny_Wolf" target="_blank">Jenny Wolf</a> brüskierte.</p>
+
+<p>Wie gehabt, wurde heute sensationslüstern weiterberichtet. Aus dem Reaktor Tokai Block 2 kam die Meldung, eine von zwei Hauptkühlwasserpumpen sei ausgefallen. Daraus resultiert für die deutsche Medienlandschaft natürlich gleich, dass die Reaktorkühlung nicht mehr funktionieren würde &#8230;</p>
+
+<p>Ähnlich reißerisch erfolgte die Meldung über MOX-Brennelemente in Reaktor Fukushima I Block 3. MOX-Brennelemente bestehen aus einer Mischung von Uran- und Plutonium-Oxiden. Das verschlimmert die Situation in der Tat, da Plutonium deutlich giftiger als Uran ist, eine Kettenreaktion ggf. alleine wieder ein Gang setzen kann und schwerer zu kühlen ist. Dennoch weiß niemand außer dem Betreiber, wie stark der Abbrand des Plutoniums bereits ist. Normale Uran-Brennelemente enthalten auch einen gewissen Grad an Plutonium, der über die Dauer des Einsatzes entsteht. Hier wird also ebenfalls fleißig spekuliert, ohne die Sachlage zu kennen.</p>
+
+<p>Weiteres Detail der Panikmache: ein in Sendai von NHK befragter Mann, kam sowohl in der Tagesschau als auch in einer Ausgabe von &#8222;heute&#8220; vor. Während das ZDF übersetzt hatte, dass er morgen wohl nicht zur Arbeit könne, weil das Büro evtl. kontaminiert ist, hieß es in der ARD, dass sein Büro total verstrahlt sei. Was nun stimmt? Ich kann leider kein Japanisch.</p>
+
+<p>Mal ehrlich: jeder mit Interesse am Thema, etwas Ahnung von Physik und einer Stunde Zeit, um sich in die Wikipedia-Artikel zu Tchernobyl, RBMK- bzw. Siedewasserreaktoren und nukleare Unfällen einzulesen, könnte wohl kompetentere Berichte verfassen, als unsere lieben Medien, die Sensationen den Fakten bevorzugen und uns einem Trommelfeuer der repetitiven bzw. redundanten Berichterstattung aussetzen. Man kann schon von einer GAU-Geilheit sprechen &#8230;</p>
+
+<p>Wer neutral und sachlich über die Lage informiert werden möchte, dem kann ich nur zu <a href="http://www.bbc.co.uk/news/" target="_blank">BBC</a>, <a href="http://english.aljazeera.net/" target="_blank">Al Jazeera English</a> oder <a href="http://www.cnn.com/" target="_blank">CNN</a> raten. Insbesondere Al Jazeera leistet wieder großartige Arbeit.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2011/03/javascript-benchmarks.html" class="post__headline__link">JavaScript-Benchmarks</a></h1>
+    <p class="post__meta">
+        <time datetime="2011-03-09T22:06:42Z" class="post-date">9. March 2011</time>
+    </p>
+    <div class="post__content">
+        <p>In den letzten Monaten tat sich viel in der Browser-Landschaft: Mitte Dezember kam Opera 11. Google bringt fast schon im Monatstakt neue Chrome-Versionen &#8212; erst gestern Version 10. Wie Microsoft heute mitteilte, kommt der finale Internet Explorer 9 am 14. März und Firefox 4 wird auch nicht mehr lange auf sich warten lassen. Es wird wieder Zeit, sich einen Überblick in Sachen JavaScript-Leistung zu verschaffen. Inbesondere Google und Opera treiben hier die Entwicklung stark voran, während Mozilla und Microsoft versuchen endlich aufzuschließen.</p>
+
+<p>Als Testplattform diente ein Intel Core i5 750 mit 8 GB RAM, einer Intel X25-M G2 80 GB und Windows 7 Professional x64 SP1.</p>
+
+<p>Hier die Ergebnisse als Diagramme:</p>
+
+<p><img class="alignnone size-full wp-image-715" title="benchmarks_2011-03-09" src="https://www.madcatswelt.org/wp-content/uploads/benchmarks_2011-03-09.png" alt="" srcset="https://www.madcatswelt.org/wp-content/uploads/benchmarks_2011-03-09.png 576w, https://www.madcatswelt.org/wp-content/uploads/benchmarks_2011-03-09-241x300.png 241w" sizes="(max-width: 576px) 100vw, 576px" /></p>
+
+<p>Aufgrund der Charakteristik und Optimierungen der einzelnen Benchmarks, gibt es keinen klaren Sieger. Am neutralsten &#8212; obwohl er dem WebKit-Projekt entstammt &#8212; erscheint mir SunSpider. Es ist dabei fast schon ironisch, dass die eigene Engine &#8222;Nitro&#8220; am schlechsten abschneidet.</p>
+
+<p>Im Vergleich zu den anderen Ergebnissen, sind die Einzelwerte aber recht nahe beisammen. Verwunderlich ist nur, dass der Internet Explorer 9 selbst Chrome und Opera leicht abhängt. Hier wurde ja desöfteren schon eine SunSpider-Optimierung der Engine seitens Microsoft vermutet. Belegen lässt sich das allerdings nicht. Klar ist aber, dass die JavaScript-Leistung gegenüber den Vorgängern deutlich zugenommen hat.</p>
+
+<p>Bei den V8-Benchmarks ist klar ersichtlich, dass er für Chrome optimiert wurde, während der Rest des Feldes grob auf einem Niveau zu sein scheint. Ähnlich drastisch scheint Kraken auf die Tracer-Technik von TraceMonkey bzw. JägerMonkey (Mozilla) ausgerichtet zu sein. Die Tracing-Technik dominierte oft Tests, wenn sie aufgrund des Programmierung des Scripts richtig arbeiten kann. In der Praxis ist das ist leider selten der Fall, daher kam meist der herkömliche JIT in Mozillas SpiderMonkey Engine zum Einsatz. Ab Firefox 4 steht ein neuer JIT namens JaegerMonkey zur Verfügung, der zum Teil auf WebKits Nitro basiert und deutliche Vorteile gegenüber dem alten System hat.</p>
+
+<p><strong>Fazit</strong></p>
+
+<p>Ingesamt überzeugt Chrome 10 bzw. V8 mit der besten Gesamtleistung im Starterfeld. Opera 11, Firefox 4 und der Internet Explorer 9 teilen sich das Mittelfeld, wobei Opera 11 die Gruppe klar anführt und der IE 9 das Rücklicht hält. Safari 5 schneidet in zwei von drei Tests als Letzter und im dritten als Vorletzter ab. Hier sollten Apple die und anderen Initiatoren des WebKit-Projekts demnächst nachlegen, sonst wird der einstmalige ICE schnell zum Regionalzug.</p>
+
+<p>Wie bei solchen Benchmarks üblich, handelt es sich hierbei natürlich in erster Linie um theoretische Ergebnisse. Praktisch betrachtet, also beim normalen Surfen, sind die Unterschiede der Testkandidaten bei weitem nicht so drastisch. Heftige Ausreißer wie noch zwischen Firefox 3.6 oder dem IE 8 und aktuellen Chrome-Versionen entfallen fast vollständig. Mozillas und Microsofts Anstrengungen wieder Anschluss zu finden, sind also geglückt.</p>
+
+    </div>
+</article>
+ 
+            
+
+            
+  <div class="pagination">
+    <div class="pagination__item pagination__item-position-prev">
+      
+        <a href="https://madcatswelt.org/" class="pagination__link">&larr; vorherige Einträge</a>
+      
+    </div>
+    <div class="pagination__item pagination__item-position-next">
+        
+          <a href="https://madcatswelt.org/page/3/" class="pagination__link">nächste Einträge &rarr;</a>
+        
+    </div>
+  </div>
+
+
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Schnellere Websites mit RequireJS</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2012/03/schnellere-websites-mit-require-js.html" class="post__headline__link">Schnellere Websites mit RequireJS</a></h1>
+    <p class="post__meta">
+        <time datetime="2012-03-24T21:47:56Z" class="post-date">24. March 2012</time>
+    </p>
+    <div class="post__content">
+        <p>Mit diesem Eintrag beginnt meine kleine Serie über schnellere Websites. Im Rahmen dieser Reihe werde ich Strategien und praktische Maßnahmen vorstellen, um die Ladegeschwindigkeiten zu analysieren, Schwachpunkte zu finden und zu vermeiden.</p>
+
+<h3 id="warum-requirejs">Warum RequireJS?</h3>
+
+<p>In den meisten Programmiersprachen existieren Funktionen wie require(), #include oder import, um weitere Bestandteile eines Programms aus einer Datei bzw. eines Namespaces zu laden. In JavaScript gibt es solche Möglichkeiten bislang nicht. <a href="http://requirejs.org/">RequireJS</a> beseitigt dieses Problem. JavaScript-Dateien werden durch RequireJS asynchron nachgeladen, so dass mehrere Dateien parallel abgeholt werden können. Gleichzeitig ist es dadurch möglich, auf script-Element im Quelltext zu verzichten und damit das Rendern der Seite zu beschleunigen.</p>
+
+<p>Script-Elemente sind Blocker im Rendering-Prozess. Browser arbeiten den Quelltext einer Seite von oben nach unten durch. Wenn ein script-Element auftaucht, muss es erst ausgeführt werden, bevor der Browser sich um den nachfolgenden Quelltext kümmern kann. Externe JavaScripts können aus diesem Grund massiven Einfluss auf die Ladegeschwindigkeit einer Seite haben, auch wenn die eigentliche Website schon längst vom Web-Server an den Browser ausgeliefert wurde.</p>
+
+<p>Falls ein externes Script auf einem langsamen Server liegt, muss der Browser warten, bis er es komplett abgerufen und ausgeführt hat. Sollte das aufgerufene Script gar nicht mehr vorhanden sein, wartet der Browser seine Timeout-Einstellung ab, bis er weitermacht. Sicherlich hat jeder schon mal gesehen, dass eine Website nur bis einem gewissen Teil angezeigt wird und erst nach ein paar Sekunden der Rest dargestellt wird. Mit sehr hoher Wahrscheinlichkeit, war dies ein nicht mehr vorhandenes oder nur sehr langsam ladendes JavaScript.</p>
+
+<p>Asynchrones Abholen findet erst nach dem Rendern der Seite statt und blockiert daher nichts. Dazu lässt sich bei konsequentem Nutzen von RequireJS der Einsatz von script-Elementen weitgehend vermeiden. Im Idealfall gibt es nur noch ein script-Element, das RequireJS lädt und ein weiteres Script startet, um die gesamte JavaScript-Funktionalität einer Seite zu initialisieren.</p>
+
+<p></p>
+
+<h3 id="konfiguration">Konfiguration</h3>
+
+<p>Hier ein simples Beispiel einer Require-JS-Konfiguration mit jQuery:</p>
+
+<pre class="javascript">(function() {
+    require.config({
+        paths: {
+            'jquery': 'libs/jquery/jquery-1.7.1'
+        }
+    });
+
+    require(['jquery'], function(jQuery){
+      jQuery.noConflict();
+    });
+})();</pre>
+
+<p>Zuerst wird RequireJS so konfiguriert, dass <a href="http://jquery.com/">jQuery</a> mittels des Keywords &#8222;jquery&#8220; geladen werden kann. Im Konfigurations-Objekt &#8222;paths&#8220; wird dafür als Attributsname &#8222;jquery&#8220; und als Wert der Pfad (ausgehend vom Verzeichnis des Scripts) zu jQuery gesetzt. Anschließend wird require() aufgerufen und als erster Parameter wird ein Array mit den aufzulösenden Abhängigkeiten erwartet &#8212; hier jQuery. Man kann hier ein unter &#8222;paths&#8220; gesetztes Keyword, den Pfad oder auch externe JavaScripts über die URL angeben. Falls es sich um ein Modul handelt, wird auf die Dateiendung &#8222;.js&#8220; verzichtet.</p>
+
+<p>Im zweiten Parameter wird eine Callback-Funktion definiert, deren Aufruf unmittelbar nach dem Laden der Abhängikeiten stattfindet. Als Parameter folgen hier die Rückgaben der angeforderten JavaScript-Dateien. In diesem Fall ist es ein jQuery-Objekt, das sogleich in den No-Conflict-Modus versetzt wird, um nicht mit evtl. anderen geladenen Bibliotheken zu kollidieren. Dieses Verfahren ist besser bekannt als <a href="http://de.wikipedia.org/wiki/Dependency_Injection">Dependency Injection</a>.</p>
+
+<h3 id="module">Module</h3>
+
+<p>RequireJS bietet über die Modul-Definition eine elegante Lösung, Programmbestandteile zu kapseln und Abhängigkeiten (z.B. jQuery) aufzulösen. Aktuell setze ich hier drei Module ein, die Funktionen für einzelne Beiträge (Syntax Highlighting, Lightbox etc.) übernehmen sowie das Tracking über Piwik bzw. Google Analytics starten.</p>
+
+<p>Alle Module sind so aufgebaut, dass sie Abhängigkeiten in Form von Bibliotheken oder anderen Modulen erst auflösen, wenn sie gebraucht werden. Gleichzeitig stellt RequireJS sicher, dass eine Abhängikeit nur einmal geladen wird und für jedes andere Modul zur Verfügung steht.</p>
+
+<p>Ein Beispiel-Modul:</p>
+
+<pre class="javascript">define(['jquery'], function($) {
+    var exports = {};
+
+    exports.init = function() {
+        $('body').append('&lt;h1&gt;Hello World!&lt;/h1&gt;');
+    }
+
+    return exports;
+});</pre>
+
+<p>Mit define() wird die Moduldefinition gestartet. Anschließend passiert das gleiche, wie in der Funktion require(). Zuerst werden die Abhängigkeiten als Array definiert, danach startet eine Dependecy Injection in die Callback-Funktion. An dieser Stelle wird ein Dollarzeichen als Parameter für die Abhängigkeit verwendet, um jQuery wie gewohnt einsetzen zu können. Anschließend wird das Objekt &#8222;exports&#8220; mit der Methode init() erstellt und zurückgegeben. Wird das Modul an anderer Stelle über require() geladen und das exports-Objekt in die Callback-Funktion injiziert, kann man in ihr die init-Methode aufrufen und damit das Modul starten. Natürlich es ist aber auch möglich, darauf zu verzichten und innerhalb der Modul-Callback-Funktion direkt Code auszuführen.</p>
+
+<p>Um ein Modul an anderer Stelle mit require() zu laden, gibt man den Pfad, ausgehend vom Verzeichnis der RequireJS-Konfiguration, zum Modul an. Wie vorhin schon beschrieben, muss man hierbei auf die Dateiendung &#8222;.js&#8220; verzichten.</p>
+
+<p>Zu guter letzt muss RequireJS selbst samt Konfiguration geladen werden:</p>
+
+<pre class="html">&lt;script src="js/libs/require/require.js" data-main="js/config"&gt;&lt;/script&gt;</pre>
+
+<p>Ein simples Script-Element hierzu genügt &#8212; am besten unmittelbar vor dem schließenden body-Element. Zusätzlich wird mit dem Daten-Attribut &#8222;main&#8220; noch der Pfad zur Konfiguration mitgegeben. RequireJS bindet das entsprechende JavaScript automatisch ein und startet sie.</p>
+
+<h3 id="fazit">Fazit</h3>
+
+<p>RequireJS ist ein mächtiges Tool, das alleine schon durch die Kapselung in verschiedene Module dem Entwickler sehr viele Vorteile bringt. Durch die immer größer werdende Komplexität von Web-Sites bzw. Web-Applikationen sind andere Formen der Organisation notwendig geworden, die in anderen Programmiersprachen schon von Anfang an vorhanden waren.</p>
+
+<p>Dank der Module mit ihren von RequireJS automatisch aufgelösten Abhängigkeiten durch Dependency Injection, lassen sich schnell und einfach, neue Funktionalitäten in eine Website implementieren, ohne weitere script-Elemente in den HTML-Quelltext einfügen zu müssen.</p>
+
+<p>Bis auf RequireJS selbst werden alle definierten Abhängigkeiten bzw. Module asynchron geladen, ohne das Rendern der Seite zu blockieren. Da Browser asynchrone Anfragen parallel abarbeiten können, werden insgesamt alle Scripts schneller geladen und früher ausgeführt, als es bei einer traditionellen Verwendung von JavaScript möglich wäre.</p>
+
+<p>Das Ergebnis ist ein großer Vorteil für alle Beteiligten. Für den Nutzer wird eine Website mit viel JavaScript deutlich schneller dargestellt, während die Funktionalitäten im Hintergrund nachgeladen werden, ohne dass man etwas davon bemerkt. Aus Sicht der Entwickler bietet RequireJS eine elegante Möglichkeit, schnelle neue Funktionen zu entwickeln, Abhängigkeiten einfach aufzulösen und durch die Module strukturierter zu arbeiten.</p>
+
+<p>Abgesehen von TypeKit und Disqus laufen alle JavaScript-Bestandteile dieser Seite als Modul. Zwar lässt sich TypeKit problemlos als Modul umsetzen, nur werden die Schriften erst nach dem Rendern der Seite geladen. Für etwa eine halbe Sekunde sind die Fallback-Schriften zu sehen, erst dann die über TypeKit-Schriften dargestellt. Da das nicht Sinn und Zweck von TypeKit und Euch Leser irritiert, wird TypeKit klassisch im head-Element vor den Stylesheets geladen.</p>
+
+<p>Disqus ist dagegen als WordPress-Plug-In eingebunden und darauf würde ich auch nur sehr ungern verzichten. Ich könnte das Plug-In zwar anpassen, aber damit wäre die Update-Fähigkeit dahin. Da Disqus seine Scripts selbst asynchron lädt, sehe ich auch keine Notwendigkeit, den ganzen Aufwand zu betreiben und Module zu schreiben. Allerdings habe ich andere Plug-Ins wie die Lightbox und das Syntax Highlighting rausgeworfen und durch RequireJS-Module ersetzt, die nun fester Bestandteil des Themes sind. Geladen werden sie aber nur, wenn auch Beiträge vorhanden sind, die eine der Funktionen brauchen.</p>
+
+<p>Falls ich Euch Interesse zu RequireJS geweckt habe, könnt Ihr meine Implementierung inkl. eine Ladesystems für Module aus dem HTML-Quelltext heraus im <a href="https://github.com/MadCatme/mcw-blue">GitHub-Repository meines WordPress-Themes</a> anschauen oder auch einen Fork erstellen, um damit selbst entwickeln zu können. Falls jemand Ideen oder Verbesserungen hat, ich freue mich über jede Anregung und jeden Pull-Request in GitHub.</p>
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

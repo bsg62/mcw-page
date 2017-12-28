@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Aktuelle JavaScript-Benchmarks</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2011/11/aktuelle-javascript-benchmarks.html" class="post__headline__link">Aktuelle JavaScript-Benchmarks</a></h1>
+    <p class="post__meta">
+        <time datetime="2011-11-05T21:52:49Z" class="post-date">5. November 2011</time>
+    </p>
+    <div class="post__content">
+        
+
+<p>Nach etwas über einem halben Jahr wird es wieder einmal Zeit, den JavaScript Engines der aktuellen Browser-Versionen auf den Zahn zu fühlen. Die Versionssprünge im Vergleich zu den <a href="https://www.madcatswelt.org/2011/03/javascript-benchmarks.html">letzten Benchmarks</a> sind beachtlich. Firefox ging von Version 3 (4 war noch Beta) auf 7, Chrome von 10 auf 15. Microsoft machte da einen vergleichsweise kleinen Schritt von 8 auf 9, während Apple und Opera bei ihren Hauptversionen 5 und 11 treu geblieben sind.</p>
+
+<p>Wie üblich dient als Testplattform mein Privatrechner mit folgender Spezifikation: Intel Core i5 750, 8 GB RAM, Intel X25 G2 80 GB und Windows 7 Professional x64 SP 1.</p>
+
+<p>Hier sind die Ergebnisse:</p>
+
+<p><img class="aligncenter size-full wp-image-798" title="js_benchmarks_v4_1" src="https://www.madcatswelt.org/wp-content/uploads/js_benchmarks_v4_1.png" alt="" srcset="https://www.madcatswelt.org/wp-content/uploads/js_benchmarks_v4_1.png 548w, https://www.madcatswelt.org/wp-content/uploads/js_benchmarks_v4_1-227x300.png 227w" sizes="(max-width: 548px) 100vw, 548px" /></p>
+
+<p>&nbsp;</p>
+
+<p>Es gibt auch dieses mal keinen klaren Gewinner, der sich alle drei Siege sichern konnte, aber Chrome 15 ist im Schnitt wieder die Nummer 1. Der Internet Explorer 9 mag zwar unter SunSpider der schnellste Kandidat sein, er verliert jedoch die anderen zwei Tests klar. Es liegt daher die Vermutung nahe, dass Microsoft hier einige Optimierungen vorgenommen hat &#8212; zumal sich an SunSpider schon länger nichts mehr getan hat.</p>
+
+<p>Wie man schön sehen kann, hat Apple im letzten halben Jahr wirklich Fortschritte mit der Nitro Engine gemacht. Safari hat sich von der roten Laterne ins Mittelfeld vorgekämpft und überholt nun Firefox in gleich zwei Disziplinen. Es bleibt abzuwarten, ob Apple den Vorsprung halten kann. Ab Firefox 9 wird Mozillas <a href="http://de.wikipedia.org/wiki/Just-in-time-Kompilierung">JIT</a> JägerMonkey durch <a href="http://en.wikipedia.org/wiki/Type_inference">Type Inference</a> bis zu 30% mehr Leistung bringen. Dazu befindet sich mit <a href="https://wiki.mozilla.org/Platform/Features/IonMonkey">IonMonkey</a> ein neuer JIT in Arbeit, der wahrscheinlich JägerMonkey und evtl. auch TraceMonkey ersetzen wird. IonMonkey wird eine andere, moderne Architektur besitzen und damit die Wartbarkeit als auch Optimierungsmöglichkeiten für die Entwickler deutlich verbessern.</p>
+
+<p>Bleibt noch Opera 11, der sich mal wieder sehr gut schlägt und die klare Nummer Zwei im Starterfeld ist.</p>
+
+<h3 id="fazit">Fazit</h3>
+
+<p>Chrome gewinnt &#8212; wie immer. Opera ist Zweiter und im weiteren Feld kämpft sich Safari an Firefox und Microsofts Internet Explorer vorbei.</p>
+
+<p>Ich bin gespannt, ob Microsoft mit dem Internet Explorer 10 wieder aufholen kann. Vielleicht sollte man in Redmond auch die Release-Zyklen überdenken. Alle anderen Hersteller können wesentlich schneller reagieren und optimieren, während Microsoft nur jährlich neue Major Releases bringen will. Wobei ich es für fraglich halte, ob wirklich jedes Jahr eine neue Version kommen wird.</p>
+
+<p>Natürlich haben theoretische Benchmarks in der Praxis weit weniger Relevanz. Meine aktuellen Experimente mit <a href="http://www.sencha.com/products/extjs/">ExtJS</a> zeigen sehr deutlich, dass bei <a href="http://de.wikipedia.org/wiki/Rich_Internet_Application">Rich Internet Applications</a> Firefox immer noch kein sonderlich gutes Bild abgibt. Das aufgebaute UI, das für eine RIA eh noch recht spartanisch ausgestattet ist, läuft in allen anderen Browsern wesentlich weniger träge und ruckelig. Gleiches lässt sich auf diverse andere JavaScript-lastige Seiten übertragen, z.B. GMail oder iCloud.</p>
+
+<p>JägerMonkey mit Type Inference, IonMonkey und die lang erwartete Integration des <a href="https://wiki.mozilla.org/Electrolysis">Electrolysis-Projekts</a> sind darum wichtiger denn je.</p>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

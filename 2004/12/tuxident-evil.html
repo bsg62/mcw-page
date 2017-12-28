@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tuxident Evil</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2004/12/tuxident-evil.html" class="post__headline__link">Tuxident Evil</a></h1>
+    <p class="post__meta">
+        <time datetime="2004-12-28T18:21:18Z" class="post-date">28. December 2004</time>
+    </p>
+    <div class="post__content">
+        <p>Vorab: ich habe nichts gegen Linux und auch nichts gegen Open Source.</p>
+
+<p>Lieber SUSE-Tux,</p>
+
+<p>vorhin habe ich mir das GameStar-Spezial zu Linux gekauft. Auf der DVD ist SUSE Linux 9.1 Personal, diverse Patches, Treiber usw.</p>
+
+<p>Die Installation ging schnell und komfortabel. Nach gut 25 Minuten lief alles einwandfrei. Da nur Konqueror mitgeliefert wurde, habe ich mir Firefox runtergeladen und installiert. Verlief nicht minder bequem als unter Windows. Leider weigerte sich der Feuerfuchs beharrlich zu starten. Keine Fehlermeldung. Erst als ich ihn über die Konsole aufgerufen habe, kam die Meldung, daß eine Datei fehlen würde. Interessanterweise lag sie aber im Firefox-Verzeichnis.</p>
+
+<p>Nun gut, Konqueror mag ich nicht sonderlich, also lud ich Mozilla runter. Installation problemlos, Mozilla lief. Lustigerweise hat der große Bruder dem Fuchs wohl in den Allerwertesten getreten, sprich Firefox lief nun auch. Schön.</p>
+
+<p>Dann war licq an der Reihe. Das war nicht schön. Invisible ging nicht, meine Kontakte wurden nur mit der UIN dargestellt und netterweise sogar teilweise in die entsprechenden UINs umbenannt (was ich erst später wieder mit Miranda gesehen habe). Okay, dann eben gaim.</p>
+
+<p>Auf der gaim-Seite gibt&apos;s leider keine rpms für Suse, also her mit dem Quellcode. War eh schon scharf drauf, mal die berühmten Worte »./configure«, »make« und »make install« zu benutzen. Configure meinte, daß das »pkg-packer« und »GLib« fehlen. Alles klar, rpms rausgesucht, installiert und dann das ganze nochmal. Der PKG-Packer ging, GLib wurde als vermisst gemeldet. Da ich das Paket aber installiert hatte und es YaST auch anzeigt, kam mir das ziemlich spanisch vor. Die Idee mittels »su« das ganze als Root auszuführen half auch nichts.</p>
+
+<p>Mir wurd&apos;s dann zu doof, also habe ich ein gaim-rpm für SUSE 9.x gesucht. Erfolgreich. Bei der Installation sprangen mir dann die Abhängigkeiten entgegen. Okay, Pakete aufgeschrieben, runtergeladen und beim Installieren gemerkt, daß diese Pakete auch nochmal Abhängigkeiten haben. Juhu.</p>
+
+<p>Ende der Geschichte.</p>
+
+<p>Mich stört das ganze jetzt weniger, da ich den festen Willen habe, mich in die Materie Linux einzuarbeiten. Wenn allerdings ein typischer Windows-Nutzer einfach mal SuSE installiert, gefällt es ihm zunächst sicher. Dann will er online gehen, auch kein Problem. Aber spätestens bei gaim, sofern es nicht mitgeliefert wird, wird&apos;s knifflig. Selberkomplilieren kann genauso ausfallen, wie in og. Beispiel und die rpm-Installation ersäuft regelrecht in Abhängigkeiten, trotz Nettigkeiten wie YaST.</p>
+
+<p>Da muß einfach noch viel getan werden, bis Linux wirklich massenkompatibel wird. Jeder, der vorher schon mal was mit Windows zu tun hatte, wird bei solchen Problemen nämlich nur eins denken: »Bei Windows klick ich auf setup und gut ist. Bei Linux muß ich zig Kram nachinstallieren, also ist Windows besser.«</p>
+
+<p>Ich lad mir jetzt jedenfalls Knoppix 3.7 runter und installier das dann. SUSE mag mich offenbar nicht :(</p>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

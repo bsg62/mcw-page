@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MacBook Pro Retina: Aufwach- und Wi-Fi-Probleme</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2012/08/macbook-pro-retina-aufwach-und-wi-fi-probleme.html" class="post__headline__link">MacBook Pro Retina: Aufwach- und Wi-Fi-Probleme</a></h1>
+    <p class="post__meta">
+        <time datetime="2012-08-25T15:51:53Z" class="post-date">25. August 2012</time>
+    </p>
+    <div class="post__content">
+        <p>In den vergangenen Tagen hatte ich einige Probleme mit meinem neuen MacBook Pro. Es wachte teilweise nur sehr langsam auf, im schlimmsten Fall dauert es fast 30 Sekunden, bis die Login-Maske kam. Als ob das noch nicht nervig genug wäre, ging nach dem Aufwachen die Wi-Fi-Verbindung nicht bzw. stürzte teilweise das Netzwerk-Panel bei der WLAN-Suche ab. Nach einem Neustart ging zwar alles wieder, aber auch nur, dem die Wi-Fi-Verbindung de- und wieder aktiviert wurde, weil beim normalen Systemstart keine IP-Adresse bezogen werden konnte.</p>
+
+<p>Insbesondere die WLAN-Probleme kamen mir etwas spanisch vor, da ich parallel zum MacBook auch einen neuen Router bekommen habe. Da aber sonst kein Wi-Fi-fähiges Gerät im Haushalt Probleme macht, fiel der neue Router als Fehlerquelle aus.</p>
+
+<p>Nach einiger Recherche in einschlägigen Apple-Foren, kam dann der entscheidende Hinweis für beide Probleme: Bluetooth.</p>
+
+<p>Offenbar blockiert Bluetooth den Aufwachprozess, wenn angemeldete Geräte (hier eine Magic Mouse) nicht gefunden werden. Zusätzlich dazu scheint es eine Funk-Interferenz (WLAN und Bluetooth nutzen beide 2,4 GHz) zu geben, die den Wi-Fi-Verbindungsaufbau stört, was sich dann entweder in og. Absturz äußert oder die IP-Vergabe durch DHCP verhindert.</p>
+
+<p>Sobald ich Bluetooth abschalte, funktioniert alles einwandfrei. Das MacBook wacht sofort auf und die Wi-Fi-Verbindung wird problemlos etabliert.</p>
+
+<p>Natürlich ist das keine endgültige Lösung des Problems, aber man kann sich zumindest solange damit behelfen, bis Apple eine Lösung liefert. Es sieht ohnehin so aus, dass diese Schwierigkeiten nur unter OS X 10.8 auftreten und dürften Updates auf 10.8.2 oder 10.8.3 behoben werden.</p>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

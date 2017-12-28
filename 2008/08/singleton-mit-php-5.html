@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Singleton mit PHP 5</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/08/singleton-mit-php-5.html" class="post__headline__link">Singleton mit PHP 5</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-08-15T17:18:02Z" class="post-date">15. August 2008</time>
+    </p>
+    <div class="post__content">
+        <p>Singleton ist ein sog. Design Pattern, zu Deutsch Entwurfsmuster. Einfach gesagt, sind es Standardlösungen für bestimmte Problemstellungen innerhalb der objektorientierten Programmierung, die immer wieder auftreten.</p>
+
+<p>Eines der einfachsten Muster ist das Singleton. Es stellt sicher, dass von einer Klasse nur eine Instanz erzeugt werden kann und keine weitere. Bei bestimmten Objekten, z.B. für die Datenbank-Verbindung, kann das sehr hilfreich sein. Da ein Singleton über eine statische Methode aufgerufen wird, ist es außerdem möglich dieselbe Instanz einer Klasse ohne Probleme überall im Script aufrufen zu können &#8211; widerrum sehr nützlich bei Datenbanken.</p>
+
+<p>So sieht in Singleton in PHP 5 aus:</p>
+
+<pre name="code" class="php">&lt;?php
+
+class Demo {
+    
+    /**  
+     * @access private   
+     * @static
+     * @var object   
+     */
+    
+    private static $_instance = null;
+
+    /**  
+     * Singleton     
+     * 
+     * @access public    
+     * @static   
+     * @return object self::$Instance    
+     */
+    
+    public final static function getInstance() {
+        if(!self::$_instance instanceof Demo) {
+            self::$_instance = new Demo();
+        }
+        
+        return self::$_instance;
+    }
+
+    /**  
+     * Constructor   
+     *
+     * @access private   
+     */
+    
+    private function __construct() {
+        // Code 
+    }
+
+    /**  
+     * No Clone Wars     
+     * 
+     * @final    
+     * @access private   
+     */
+    
+    public final function __clone() {
+        return null;
+    }
+
+}
+
+?&gt;</pre>
+
+<p>Zuerst wird das statische Attribut <em>$instance</em> als null definiert, gefolgt von der statischen Methode <em>getInstance()</em>. Die überprüft, ob in <em>self::$instance</em> bereits eine Instanz der Klasse hinterlegt ist. Falls nein, wird ein neues Objekt erstellt und die Referenz in <em>self::$instance</em> gespeichert. Anschließend gibt <em>getInstance()</em> die Instanz der Klasse zurück.</p>
+
+<p>Wichtig ist, dass der Konstruktor der Klasse als <em>private</em> definiert ist. Somit ist sichergestellt, dass nur <em>getInstance()</em> ihn aufrufen kann und man keine weiteres Objekt der Klasse erzeugen darf. Ebenso muss die Methode __<em>clone()</em> als <em>private</em> deklariert werden, damit das Objekt nicht kopiert werden darf.</p>
+
+<p>Mit folgendem Code erhält man nun die Instanz der Klasse:</p>
+
+<pre name="code" class="php">$demo = Demo::getInstance();</pre>
+
+<p>Dieser Aufruf funktioniert überall, sobald die entsprechende Klasse eingebunden wurde.</p>
+
+<p>Das Singleton Pattern ist aus diversen Gründen recht umstritten. Viele sind der Ansicht, dass man es gar nicht bräuchte. Das mag vielleicht in der normalen Anwendungsentwicklung zutreffen, aber für Web-Programmierung mit PHP, ist es insbesondere bei Datenbank-Verbindungen sinnvoll. Gerade Anfänger begehen oft in dieser Hinsicht, da die alte MySQL-Schnittstelle verwendet und auf die Verwaltung der einzelnen Verbindungen zum Datenbank-Server gepfiffen wird. Eine DB-Klasse mit Singleton stellt sicher, dass es nur eine Verbindung gibt und das entsprechende Objekt überall verfügbar ist.</p>
+
+<p><strong>Hinweis:</strong> aufgrund der mangelhaften Objekt-Unterstützung in PHP 4, ist ein Singleton dort &#8211; in der oben gezeigten. Form &#8211; nicht möglich.</p>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="generator" content="Hugo 0.31.1" />
+    <title>madcats[welt]</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2011/03/eigener-minecraft-server-mit-amazon-ec2.html" class="post__headline__link">Eigener Minecraft-Server mit Amazon EC2</a></h1>
+    <p class="post__meta">
+        <time datetime="2011-03-06T17:45:52Z" class="post-date">6. March 2011</time>
+    </p>
+    <div class="post__content">
+        <p>Nach einigen negativen Erlebnissen mit Spielserver-Anbietern für den <a href="http://www.minestar.de/" target="_blank">MineStar-Server</a>, war klar, dass nur ein eigener Server genug Leistung hat, um wirklich ein gutes Spielerlebnis mit ca. 15+ Leuten zu bieten. Dedizierte Hardware kam aus Preisgründen nicht in Frage, also entschied man sich für einen virtuellen Server in einer Cloud und bisher funktioniert alles tadellos. Angespornt hiervon und den guten Erfahrungen mit den Amazon Web Services, habe ich mich gefragt, ob man nicht einen Server über <a href="http://aws.amazon.com/de/ec2/" target="_blank">Amazons EC2</a> aufsetzen kann und mich daran gemacht.</p>
+
+<p>Mit einer Micro-Instanz von EC2 kostet das ganze pro Stunde 2 Cent, dazu bezahlt man den Traffic. Neukunden bekommen im ersten Jahr einiges kostenlos, Details siehe <a href="http://aws.amazon.com/de/free/" target="_blank">hier</a>. Einen kleinen Server sollte man damit weitgehend kostenlos betreiben können. Da man nur den Verbrauch und keine Grundgebühren bezahlt, kann man notfalls den Server einfach abschalten.</p>
+
+<p>Die Kosten für Euren Server könnt Ihr im Konto-Bereich von Amazon Web Services mit zweistündiger Verzögerung genau überwachen.</p>
+
+<p>Eine detaillierte Anleitung zum Aufsetzen eines EC2-Servers für Minecraft gibt&#8217;s unter &#8222;weiterlesen &#8230;&#8220;.</p>
+
+<p>Wie funktioniert das ganze nun? Recht simpel, aber es gibt ein paar Anforderungen:</p>
+
+<ol>
+<li><p>ein Amazon-Account mit gültiger Kreditkarte</p></li>
+
+<li><p>eine gültige Telefonnummer, um während der Registrierung für EC2 die Identität zu bestätigen (man wird angerufen und muss eine von der Website dargestellte PIN eingeben, es entstehen keine Kosten)</p></li>
+
+<li><p>grundlegende Kenntnisse der Unix-Shell (nicht zwingend, aber auf jeden Fall ratsam für die Verwaltung des Minecraft-Servers)</p></li>
+</ol>
+
+<p>Englisch und ein paar grundsätzliche Kenntnisse zum Thema Server setze ich einfach voraus. ;)</p>
+
+<p><strong>Registrierung und Login:</strong></p>
+
+<p style="padding-left: 30px;">
+  <a href="http://aws.amazon.com/de/ec2/" target="_blank">Registriert Euch hier für Amazon EC2 (ganz unten)</a> und wartet auf die Bestätigungen per Mail.
+</p>
+
+<p style="padding-left: 30px;">
+  Loggt Euch in die <a href="https://console.aws.amazon.com/" target="_blank">Amazon Web Services Management Console</a> ein und klickt auf den Reiter EC2.
+</p>
+
+<p><strong>Erstellen des EC2-Servers:</strong></p>
+
+<p style="padding-left: 30px;">
+  Klickt auf &#8222;Launch Instance&#8220; und wählt &#8222;Basic 32-bit Amazon Linux AMI 2010.11.1 Beta&#8220;.
+</p>
+
+<p style="padding-left: 30px;">
+  Wählt unter  &#8222;Instance Type&#8220; Micro aus und fahrt fort.
+</p>
+
+<p style="padding-left: 30px;">
+  Die &#8222;Advanced Instance Options&#8220; lasst Ihr so wie sie sind und fahrt fort.
+</p>
+
+<p style="padding-left: 30px;">
+  Dem Key &#8222;Name&#8220; könnt Ihr im entsprechenden Feld für &#8222;Value&#8220; den Namen Eures Servers geben, also z.B. &#8222;Minecraft&#8220; und fahrt fort.
+</p>
+
+<p style="padding-left: 30px;">
+  Lasst ein neues Key Pair mit dem Namen Eurer Wahl erstellen und speichert die Datei ab.
+</p>
+
+<p style="padding-left: 30px;">
+  Erstellt eine neue Security Group mit einem Namen Eurer Wahl und fahrt fort.
+</p>
+
+<p style="padding-left: 30px;">
+  Anschließend seht Ihr eine Übersicht Eurer Einstellungen und könnt die Server-Instanz starten.
+</p>
+
+<p><strong>Firewall-Konfiguration des Servers</strong></p>
+
+<p style="padding-left: 30px;">
+  Klickt in der EC2 Management Console links auf Security Groups und wählt Eure vorhin erstellte Gruppe an.
+</p>
+
+<p style="padding-left: 30px;">
+  Erstellt eine neue Regel mit folgenden Einstellungen:
+</p>
+
+<ul style="padding-left: 30px;">
+  <li>
+    Connection Method: Custom
+  </li>
+  <li>
+    Protocol: TCP
+  </li>
+  <li>
+    From Port/To Port: 25565
+  </li>
+  <li>
+    Scource: 0.0.0.0/0
+  </li>
+</ul>
+
+<p style="padding-left: 30px;">
+  Damit hat man nun über den Standard-Port von Minecraft Zugriff auf Euren Server.
+</p>
+
+<p><strong>Einloggen auf dem Server</strong></p>
+
+<p style="padding-left: 30px;">
+  Als Windows-User benötigt Ihr für den Login PuTTY als SSH-Client.
+</p>
+
+<p style="padding-left: 30px;">
+  PuTTY gibt&#8217;s <a href="http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html" target="_blank">hier</a> und besorgt Euch auch noch gleich PuTTYgen.
+</p>
+
+<p style="padding-left: 30px;">
+  Da PuTTY keine Key-Pair-Dateien im PEM-Format mag, muss die Datei konvertiert werden: startet PuTTYgen, wählt &#8222;File&#8220; -> &#8222;Load private key&#8220;, wählt die Key-Pair-Datei an, das Ihr vorhin erstellt habt und klickt auf &#8222;Save private key&#8220;.
+</p>
+
+<p style="padding-left: 30px;">
+  Öffnet nun PuTTY, tragt als Hostname &#8222;ec2-user@Public-DNS-des-Servers&#8220; (den Public DNS findet Ihr in der Beschreibung des Servers) ein, z.B.: ec2-user@ec2-43-51-130-107.eu-west-1.compute.amazonaws.com
+</p>
+
+<p style="padding-left: 30px;">
+  Klickt in der linken Navigation von PuTTY auf Connection -> SSH -> Auth und gebt unter &#8222;Private key file for authentication&#8220; Eure konvertierte Key-Pair-Datei an.
+</p>
+
+<p style="padding-left: 30px;">
+  Geht zurück zu &#8222;Session&#8220; und klickt unten auf &#8222;Open&#8220;.
+</p>
+
+<p style="padding-left: 30px;">
+  Willkommen in der Shell Eures Servers. Lasst das Fenster offen. Wir brauchen es später noch.
+</p>
+
+<p><strong>Server-Dateien hochladen</strong></p>
+
+<p style="padding-left: 30px;">
+  Man könnte die Dateien auf die harte Tour via Shell hochladen, aber das will ich hier niemanden antun. Stattdessen empfehle ich <a href="http://winscp.net/" target="_blank">WinSCP</a> oder unter OS X <a href="http://cyberduck.ch/" target="_blank">Cyberduck</a>.
+</p>
+
+<p style="padding-left: 30px;">
+  Installiert WinSCP und startet es.
+</p>
+
+<p style="padding-left: 30px;">
+  Klickt auf &#8222;Neu&#8220; und gebt folgende Daten an:
+</p>
+
+<ul style="padding-left: 30px;">
+  <li>
+    Rechnername: Public DNS des Servers
+  </li>
+  <li>
+    Benutzername: ec2-user
+  </li>
+  <li>
+    Passwort: bleibt leer
+  </li>
+  <li>
+    Datei mit privatem Schlüssel: Eure Key-Pair-Datei
+  </li>
+</ul>
+
+<p style="padding-left: 30px;">
+  Klickt auf anmelden und Ihr landet im Nutzerverzeichnis Eures Servers. Ihr könnt nun von hier aus wie mit einem normalen FTP-Programm die Server-Dateien des Minecraft-Servers hochladen.
+</p>
+
+<p><strong>Starten und Verwalten des Servers</strong></p>
+
+<p style="padding-left: 30px;">
+  Über die noch offene PuTTY-Session könnt Ihr nun Euren Server starten. Eine genaue Erklärung spare ich mir an dieser Stelle, da dies schon von Anderen zigfach und detalliert beschrieben wurde, u.A. im <a href="http://www.minecraftwiki.net/wiki/Setting_up_a_server#Linux" target="_blank">Minecraft-Wiki</a> oder <a href="http://www.minecraftforum.net/viewtopic.php?f=1013&t=23122" target="_blank">Minecraft-Forum</a>. Dort findet Ihr auch Informationen über die Verwaltung des Servers.
+</p>
+
+<p>So, damit solltet Ihr halbwegs gerüstet sein, um einen kleinen Minecraft-Server mit EC2 aufzusetzen. Fragen und Anmerkungen bitte in die Kommentare.</p>
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2011/03/ein-paar-anderungen.html" class="post__headline__link">Ein paar Änderungen</a></h1>
+    <p class="post__meta">
+        <time datetime="2011-03-05T19:27:07Z" class="post-date">5. March 2011</time>
+    </p>
+    <div class="post__content">
+        <p>Nach langer Abstinenz durch Blog-Unlust, wird es Zeit wieder etwas zu schreiben. Ich habe in vergangenen Tagen einige technische Änderungen vorgenommen:</p>
+
+<ul>
+<li><p>Ein Großteil der statischen Inhalte (Bilder, CSS-Dateien, JavaScripts etc.) wird nun über ein Content Delivery Network (CDN) bereitgestellt. Hierzu verwende ich ich die Services <a href="http://aws.amazon.com/de/s3/" target="_blank">Amazon S3</a> bzw. <a href="http://aws.amazon.com/de/cloudfront/" target="_blank">Amazon CloudFront</a>. S3 übernimmt die eigentliche Speicherung der Dateien innerhalb des Amazon-Netzwerks. CloudFront bezieht die Daten von S3 und stellt sie wahlweise als Download- oder Streaming-Inhalt über das weltweite CloudFront-Netzwerk bereit. Realisiert wird das ganze über das WordPress-Plug-In <a href="http://wordpress.org/extend/plugins/w3-total-cache/" target="_blank">W3 Total Cache</a>, das die Dateien zu S3 überträgt und sich um die URL-Umschreibung zu CloudFront kümmert.</p>
+
+<p>Das klingt nun extrem überdimensioniert und ist es eigentlich auch. Mir geht es dabei um den technischen Aspekt, wie man sowas realisiert und die sich daraus ergebenden Vorteile von Cloud Hosting Services. Abgesehen davon, ist es unschlagbar günstig. Man zahlt keinerlei Grundgebühren, es wird nur abgerechnet, was man wirklich verbraucht. Für meine Verhältnisse in Sachen Traffic und Zugriffe, kostet das nur ein paar Cent im Monat.</p></li>
+
+<li><p>Nach dem ich zwischenzeitlich wieder Google Analytics als Statistikdienst genutzt hatte, bin ich nun auf <a href="http://piwik.org/" target="_blank">Piwik</a> umgestiegen. Piwik ist eine Open Source-Lösung, die fast alles kann, was Analytics auch bietet, läuft aber lokal auf meinem Web-Server. IP-Adressen werden ausschließlich anonymisiert verwendet.</p>
+
+<p>Wer nicht von Piwik erfasst werden möchte, kann sich <a href="http://analytics.madcatswelt.org/index.php?module=CoreAdminHome&action=optOut" target="_blank">hier</a> per Cookie ausschließen lassen.</p></li>
+
+<li><p>Wie oben schon erwähnt, setze ich nun W3 Total Cache ein. Neben der Bereitstellung der statischen Inhalte über ein CDN, bietet es vor allem diverse Caching-Systeme für Dateien, Datenbank-Inhalte, Objekte oder auch HTTP-Kompression. Die Ladezeiten sollten so angenehmer sein und gleichzeitig wird der Server geschont.</p></li>
+</ul>
+
+<p>So, das war&#8217;s dann erstmal. In Zukunft werden wieder mehr Einträge folgen, wie üblich hauptsächlich über Technik, Web-Entwicklung oder Spiele.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2010/07/apple-und-die-antenne.html" class="post__headline__link">Apple und die Antenne</a></h1>
+    <p class="post__meta">
+        <time datetime="2010-07-25T01:09:34Z" class="post-date">25. July 2010</time>
+    </p>
+    <div class="post__content">
+        <p><img class="alignnone" title="iPhone 4" src="https://www.madcatswelt.org/wp-content/uploads/iphone_4.png" alt="" /></p>
+
+<p>Habe ich Empfangsproblem mit einem iPhone 4? Ja, in Gegenden mit schlechter Netzabdeckung. Habe ich ein Problem damit? Nein, mein Hirn hat in dieser Beziehung keine Empfangsschwierigkeiten, die offenbar viele besitzen, wenn man sich die Nachrichten, Blog-Einträge, Twitter- und Facebook-Kommentare durchliest. Überwiegend ist das heiße Luft, denn niemand außer Apple kennt die wahren Ursachen und die Zahl der Betroffenen.</p>
+
+<p>Der Rest der Welt weiß nur, dass das Problem exisitiert, aber auch nicht bei jedem Gerät. Spielt aber für mich keine Rolle. Genauso wie die Ursache des Problems. Es ist da und muss gelöst werden. Apple hat nun &#8212; etwas spät &#8212; reagiert und bietet Abhilfe. Mit der Vergabe von kostenlosen Hüllen bzw. Rückerstattung der Kosten eines Bumper-Kaufs und dem erweiterten Rückgaberecht, mag so mancher nicht einverstanden sein und nach einer Rückruf- und Reparaturaktion schreien. Wozu? Als Kunde habe ich davon keinen Vorteil, weil es derzeit keine Hardware-Lösung gibt. Die Hüllen hingegen helfen sofort und haben sogar noch andere Vorteile, z.B. Fall- und/oder Kratzschutz. Wenn einem das nicht zusagt, kann man das Gerät immer noch zurückbringen und bekommt sein Geld wieder. Derzeit geht das wohl nur in den USA, aber die Telekom wird hier mitziehen müssen.</p>
+
+<p>Ich will nicht behaupten, dass Apple ideal und schnell reagiert hat, aber immerhin kam eine Reaktion, von der ein Kunde auch etwas hat. Andere Hersteller, deren Smartphones ebenfalls Empfangsprobleme aufweisen, tun nichts oder streiten es sogar ab. Sie können sich diesen Luxus aber auch leisten, weil eine negative Schlagzeile über Motorola, RIM oder selbst Nokia, lange nicht so viel Anklang findet und derart irrationale, teils sogar verstörende Reaktionen hervorruft. Aus einigen Leuten spricht der blanke Hass, als hätte Steve Jobs persönlich ihre Mutter erschossen und auf der Leiche getanzt. Die Ironie daran: viele davon haben nie ein Apple-Produkt besessen.</p>
+
+<p>Ich frage mich wirklich, warum es kaum neutrale Sichtweisen zu Apple gibt? Entweder ist alles gut oder alles scheiße. Dabei gibt&#8217;s keinen Grund dazu. Niemand wird gezwungen ein iPhone oder einen Mac zu kaufen. Zwar kann einem manch zu sehr überzeugter Apple-Anhänger ziemlich auf den Senkel gehen, aber das ist keine Rechtfertigung, um das Hirn auszuschalten und seiner Abneigung freien Lauf zu lassen &#8230;</p>
+
+<p><strong>Zum angenehmen Teil des Abends</strong></p>
+
+<p>Abseits des ganzen Theaters kann ich nur sagen, dass das iPhone 4 rundum gelungen ist &#8212; selbst die Antenne. Wo mein altes iPhone 3GS gar keinen oder nur sehr schlechten Empfang hatte, glänzt das iPhone 4 mit vier oder fünf Balken (iOS 4.0.1). Durch die verschlankte Konstruktion, hat man das Gefühl einen soliden Block aus Stahl und Glas in der Hand zu halten. Zu dieser Stabilität gehört auch die deutlich verbesserte Kratzresistenz der neuen Glas-Rückseite. Nach zwei Wochen ist sie noch absolut makellos. Beim 3G und 3GS waren im gleichen Zeitraum nach ein paar Tagen erste haarfeine Kratzer zu sehen &#8212; trotz pfleglicher Behandlung.</p>
+
+<p>Das Retina Display ist ein Traum. Selbst ganz nahe sind kaum Pixel zu erkennen. Wenn man sich daran gewöhnt hat, wirkt das Display eines alten iPhones oder selbst eines iPads gar richtig grobpixelig. Dank IPS-Panel bleibt dazu die Farbdarstellung bei normalen Blickwinkeln immer stabil und das Schwarz wirkt schön satt. Gelbe Flecken sind übrigens weit und Breit keine zu sehen.</p>
+
+<p>Die neue 5-MPixel-Kamera ist schnappschusstauglich und für diese Chipgröße bzw. Handy-Verhältnisse sogar noch halbwegs rauscharm. Eine wirkliche Überraschung ist der LED-Blitz. So extrem hell hätte ich ihn nicht vermutet. Wenn er permanent an ist, z.B. mit der App »Light«, macht er selbst kleinen Taschenlampen Konkurrenz. Mit Videoaufnahme habe ich normal nicht viel an Hut, aber meine Testvideos in 720p waren durchweg scharf, farbneutral und flüssig.</p>
+
+<p>In Sachen Geschwindigkeit macht sich der A4-Chip wirklich bemerkbar. Das iPhone 4 rendert Websites fast genauso schnell wie ein iPad. Dank mehr RAM müssen bei Tabbed Browsing auch nicht ständig andere Tabs beim Aufrufen neu geladen werden. Versteh wer will, warum das iPad nicht auch 512 MB RAM hat. Gleichzeitig zu höheren Leistung, scheint der A4 deutlich weniger Strom zu ziehen. Der Akku ist im Vergleich zum 3GS etwas größer geworden. Das alleine kann aber nicht den Laufzeitunterschied erklären. Bei meiner typischen Nutzung hält das 3GS mit iOS ca. 2,5 Tage. Das iPhone 4 kam auf Anhieb auf über vier Tage.</p>
+
+<p>Insgesamt ist das iPhone 4 ein großer Wurf und die hohen Verkaufszahlen vollkommen gerechtfertigt. Das Empfangsproblem in schlecht abgedeckten Gegenden dämpft die Freude etwas, hat aber keine großen Auswirkungen auf meinen positiven Gesamteindruck. Der Fairness halber muss ich aber sagen, dass dieses Thema jeder für sich bewerten muss, um einen eventuellen Kauf zu entscheiden. Für mich spielt es nun mal weniger eine Rolle und demnächst kommt die Lösung eh kostenlos ins Haus.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2010/06/ipad.html" class="post__headline__link">iPad</a></h1>
+    <p class="post__meta">
+        <time datetime="2010-06-01T17:01:13Z" class="post-date">1. June 2010</time>
+    </p>
+    <div class="post__content">
+        <p><img class="alignnone" title="iPad" src="https://www.madcatswelt.org/wp-content/uploads/ipad.png" alt="" /></p>
+
+<ol>
+<li>Mai 2010, 8:15 Uhr, Gravis Store München: ich halte mein iPad in der Hand und gehe zur Kassenschlange. Mangels Organisation und einigen Problemen mit dem Kassensystem, durfte ich bis 9:50 Uhr warten, um es überhaupt bezahlen zu können. Allerdings hätte ich am Apple Store wohl genauso lange gewartet &#8212; wenn nicht länger. Als ich dort um ca. 7:40 Uhr vorbei ging, warteten locker über 500 Leute in der Schlange. Und für einen guten Platz, um das iPad möglichst früh genug zu bekommen, bin ich definitiv nicht Fanboy genug. Der erste fand sich immer schon am frühen Nachmittag des Vortags am Apple Store ein.</li>
+</ol>
+
+<p>Hat sich die zweistündige Warterei gelohnt oder bin ich doch nur dem Hype erlegen? Ich kann dazu nur sagen, dass es sich für mich gelohnt hat. Das iPad ist genau das, was ich mir von ihm versprochen habe. Das ist aber auch die Krux am ganzen Rummel. Viele erwarten zu viel und regen sich z.B. über die vermeintlich schlechte Ausstattung auf und greifen zum Vergleich zu Net- und Notebooks. So weit, so richtig. Nur: das iPad fällt nicht in diese Kategorie. Man kann wohl wahrlich von einem Vergleich zwischen Äpfeln und Birnen sprechen. Ein iPad ist kein MacBook und will auch gar keins sein. Als Media-Tablet erfüllt es seinen Zweck und das &#8212; aus meiner Sicht &#8212; sehr gut.</p>
+
+<p>Alle nötigen Funktionen sind enthalten. Als Hobby-Fotograf würde ich aber sehr begrüßen, wenn in zukünftigen Modelle der SD-Slot gleich eingebaut ist. Zur schnellen Fotokontrolle auf einem großen, blickwinkelunabhängigen Display, ist das iPad ideal und erspart einem die Notebook-Schlepperei, sofern man nicht gleich Korrekturen vornehmen möchte. Aber wer weiß, vielleicht bringt Apple irgendwann Aperture für iPhone OS.</p>
+
+<p>Wo wir schon beim Display sind: es schlicht weg brillant. Dank S-IPS-Panel gibt es keine kippenden oder auch nur abfallende Farben. Die Größe macht sich bei allen angepassten Apps positiv bemerkbar. Apple versteht es geschickt durch mehr Platz und neue UI-Komponenten, die Benutzerführung im Vergleich zum iPhone noch weiter zu verbessern. Dazu kommt noch eine gehörige Portition Eye-Candy, die aber apple-typisch stil- und sinnvoll eingearbeitet wurde, ohne die Bedienbarkeit zu verschlechtern. Besonders der Kalender und das Adressbuch erinnern mehr ihre klassischen Papierkollegen im Ledereinband. Dagegen richtet sich die iPod-App ganz klar nach dem iTunes-Konzept.</p>
+
+<p>YouTubes App wurde auch gehörig aufgebohrt und funktioniert bestens. Die Website ist damit vollkommen überflüssig geworden. <span style="text-decoration: line-through;">Leider schaffe ich es nur nach wie vor nicht, mich über einen Google-Account in der App einzuloggen.</span> (Herr je, bestimmte Sonderzeichen in den Passwörtern verhindern den Login. Da hat wohl einer beim der Encoding-Übergabe Mist gebaut.) Bei Google Maps hat sich optisch nicht viel getan, aber es profitiert klar vom A4-Prozessor und der besseren WLAN-Leistung. Der Bildaufbau ist erheblich schneller und flüssiger als beim iPhone 3GS &#8212; gilt aber generell für die meisten Apps. Zu guter letzt bleibt noch Safari. Was soll man noch groß sagen? Ist und bleibt der beste Mobil-Browser und ist durch die Integration in iPhone OS mit Multitouch einfach unschlagbar gut.</p>
+
+<p>Noch kurz zum Akku: im Auslieferungszustand war er auf 90%. Ich habe ihn Freitag mittag voll geladen und komme damit bisher immer noch aus. Aktuell zeigt die Anzeige 30%, obwohl ich in den letzten drei Tagen wirklich viel damit angestellt habe. Die von Apple genannten 10 Stunden sind also durchaus realistisch.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2010/05/soap-mit-php.html" class="post__headline__link">SOAP mit PHP</a></h1>
+    <p class="post__meta">
+        <time datetime="2010-05-23T14:48:27Z" class="post-date">23. May 2010</time>
+    </p>
+    <div class="post__content">
+        <p>Die SOAP-Schnittstelle von PHP ist eine tolle Sache. Ihr Aufbau ist durchdacht und einfach zu verstehen. Als Entwickler kann man mit sehr wenigen Zeilen wirklich viel erreichen und es wird einem die gesamte XML-Ebene eines Zugriffs erspart. Leider gibt es aber ein großes Manko: die mangelhafte Dokumenation für die Datenübergabe. Die Beispiele auf php.net enthalten nur ganz einfache Strukturen, und keine Complex Types mit Attributen, gleichen Elementnamen auf derselben Ebene etc.</p>
+
+<p>Im Zuge eines großen Shop-Projekts musste ich mich tiefer in die Schnittstelle einarbeiten und immer wieder stundenlang in den entsprechenden Kommentaren auf php.net oder via Suchmaschine recherchieren bzw. hirnlos rumprobieren, weil bei der Suche nichts sinnvolles rauskam. Daher nun an dieser Stelle ein paar einfache Beispiele, bestehend aus der XML-Struktur (den SOAP-Envelope spare ich mir) und dem entsprechenden Array-Aufbau.</p>
+
+<p><strong>Attribute</strong></p>
+
+<p>Gewünschtes XML:</p>
+
+<pre name="code" class="html">&lt;basket&gt;
+    &lt;item id="1" value="499"&gt;Apple iPad WiFi 16 GB&lt;/item&gt;
+&lt;/basket&gt;
+</pre>
+
+<p>PHP-Array:</p>
+
+<pre name="code" class="php">Array
+(
+    [basket] =&gt; Array
+        (
+            [item] =&gt; Array
+                (
+                    [_] =&gt; &gt;Apple iPad WiFi 16 GB
+                    [id] =&gt; 1
+                    [value] =&gt; 499
+                )
+
+        )
+
+)
+</pre>
+
+<p><strong>Elemente mit gleichen Namen in der derselben Ebene</strong></p>
+
+<p>An obigem Beispiel erkennt man, dass die Elementnamen über die Array-Schlüssel festgelegt werden. Möchte man nun mehrere Elemente mit dem gleichen Namen in derselben Ebene haben, wird daraus nichts, weil sie sich gegenseitig überschreiben würden. Daher werden kommt um die Elemente noch ein weiteres, nun aber numerisches Array.</p>
+
+<p>Gewünschtes XML:</p>
+
+<pre name="code" class="html">&lt;basket&gt;
+    &lt;item id="1" value="499"&gt;Apple iPad WiFi 16 GB&lt;/item&gt;
+    &lt;item id="2" value="999"&gt;Apple MacBook&lt;/item&gt;
+&lt;/basket&gt;
+</pre>
+
+<p>PHP-Array:</p>
+
+<pre name="code" class="php">Array
+(
+    [basket] =&gt; Array
+        (
+            [0] =&gt; Array
+                (
+                    [item] =&gt; Array
+                        (
+                            [_] =&gt; Apple iPad WiFi 16 GB
+                            [id] =&gt; 1
+                            [value] =&gt; 499
+                        )
+
+                )
+
+            [1] =&gt; Array
+                (
+                    [item] =&gt; Array
+                        (
+                            [_] =&gt; Apple MacBook
+                            [id] =&gt; 2
+                            [value] =&gt; 999
+                        )
+
+                )
+
+        )
+
+)
+</pre>
+
+<p><strong>Element mit Attributen und Kinder-Elementen</strong></p>
+
+<p>Gewünschtes XML:</p>
+
+<pre name="code" class="html">&lt;basket date="2010-05-23"&gt;
+    &lt;items&gt;
+        &lt;item id="1" value="499"&gt;Apple iPad WiFi 16 GB&lt;/item&gt;
+        &lt;item id="2" value="999"&gt;Apple MacBook&lt;/item&gt;
+    &lt;/items&gt;
+&lt;/basket&gt;
+</pre>
+
+<p>PHP-Array:</p>
+
+<pre name="code" class="php">Array
+(
+    [basket] =&gt; Array
+        (
+            [date] =&gt; 2010-05-23
+            [items] =&gt; Array
+                (
+                    [0] =&gt; Array
+                        (
+                            [item] =&gt; Array
+                                (
+                                    [_] =&gt; Apple iPad WiFi 16 GB
+                                    [id] =&gt; 1
+                                    [value] =&gt; 499
+                                )
+
+                        )
+
+                    [1] =&gt; Array
+                        (
+                            [item] =&gt; Array
+                                (
+                                    [_] =&gt; Apple MacBook
+                                    [id] =&gt; 2
+                                    [value] =&gt; 999
+                                )
+
+                        )
+
+                )
+
+        )
+
+)
+</pre>
+
+<p>Ich hoffe, dass ich mit diesen einfachen Beispielen einigen Entwicklern die lästige Sucherei bzw. das Rumprobieren ersparen konnte.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2010/05/formel-farce.html" class="post__headline__link">Formel Farce</a></h1>
+    <p class="post__meta">
+        <time datetime="2010-05-16T20:47:03Z" class="post-date">16. May 2010</time>
+    </p>
+    <div class="post__content">
+        <ol>
+<li><p>Alonso überholt &#8212;  kurz nach Hülkenbergs Unfall &#8212; nachweislich unter gelber Flagge einen HRT im Tunnel. Die Rennleitung unternimmt nichts.</p></li>
+
+<li><p>Massa überfährt die gelbe Linie nach seinem Boxenstop. Die Rennleitung unternimmt nichts.</p></li>
+
+<li><p>Barrichello schmeisst nach seinem Unfall das Lenkrad die Strecke, gefährdet damit die Sicherheit der anderen Fahrer und erschwert den Transport des Wracks. Die Rennleitung unternimmt nichts.</p></li>
+
+<li><p>Schumacher überholt nach der Safety-Car-Linie unter grüner Flagge Alonso, der noch dazu einen Fahrfehler begangen hat. Die Rennleitung bestraft Schumacher mit einer Durchfahrtsstrafe, die in eine 20 Sekunden Zeitstrafe (wegen Rennende) umgewandelt wird, obwohl das Safety Car von der Rennleitung reingerufen und die Strecke durch die Rennleitung freigegeben wurde. Man beruft sich dabei auf eine Regel, die in diesem Fall gar nicht gilt sowie durch die Streckenfreigabe der Rennleitung ohnehin außer Kraft gesetzt worden wäre.</p></li>
+</ol>
+
+<p>Dass die Rennkommissare oft merkwürdige Ansichten des Geschehens auf der Strecke haben, ist wirklich keine große Neuigkeit. Heute hat man aber richtig ins Klo gegriffen. Drei zweifelsfreie Vergehen werden nicht bestraft, während, die im besten Fall für die FIA, strittige Szene über zwei Stunden lang diskutiert und anschließend eine totale Fehlentscheidung getroffen wird. Noch dazu mit einer Strafe, die lt. Regelwerk nicht zurückgenommen werden kann.</p>
+
+<p>Was soll man dazu noch sagen? Über soviel geballte Dummheit auf einem Haufen schweigt man besser.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2010/04/umzug.html" class="post__headline__link">Umzug</a></h1>
+    <p class="post__meta">
+        <time datetime="2010-04-27T23:08:00Z" class="post-date">27. April 2010</time>
+    </p>
+    <div class="post__content">
+        <p>In den nächsten Tag zieht die Domain madcatswelt.org auf einen anderen Provider um. Ich werde daher erstmal die Kommentare deaktivieren. Sobald die Umstellung erfolgt ist und ich sichergehen kann, dass die DNS-Umstellung bei den meisten ISPs durch ist, schalte ich die Kommentarfunktion wieder ein.</p>
+
+<p><strong>Update:</strong></p>
+
+<p>Umzug abgeschlossen.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2010/04/wordpress.html" class="post__headline__link">WordPress³</a></h1>
+    <p class="post__meta">
+        <time datetime="2010-04-24T23:21:43Z" class="post-date">24. April 2010</time>
+    </p>
+    <div class="post__content">
+        <p>Es ist vollbracht: madcats[welt] läuft mit WordPress.</p>
+
+<p>Angekündigt war dieser Schritt bereits für September, aber wie das halt so ist, kam immer etwas dazwischen. Dabei war eigentlich alles in ein paar Stunden fertig. Der technische Teil war schnell erledigt, aber ein passendes Design zu finden, war ob dieser Riesenauswahl gar nicht so einfach.</p>
+
+<p>Am Ende fiel meine Entscheidung auf zBench, das ich aber zu einer aufpolierten Version von mcw[ruby] umgebaut habe &#8212; vom Original-Design ist eigentlich nicht mehr viel übrig. Die Anpassungen sind noch nicht ganz fertig. Bei den Kommentaren und der Tag Cloud wird sich in den nächsten Tagen noch etwas tun.</p>
+
+<p>Um endlich von den Einschränkungen der immer selben Schriftarten für Websites wegzukommen, nutze ich jetzt den Dienst <a href="http://typekit.com/" target="_blank">typekit</a>. Typekit bietet professionelle (und daher meist kostenpflichtige) Schriften als Web-Fonts an. Man stellt sich einfach ein Schriftpaket für seine Seite zusammen, fügt zwei Zeilen JavaScript in den head-Bereich ein und kann die Schriften wie gewohnt im Stylesheet angeben. Den Rest erledigt typekit.</p>
+
+<p>Wer das ausprobieren möchte, kann einen kostenlosen Trial-Account mit maximal zwei Schriften und 5 GB/Monat Traffic (für die Schriften) nutzen. Für die meisten Blogs sollte das sogar ausreichen, ansonsten dürfte der &#8222;Personal Plan&#8220; für 24,99 $ im Jahr die richtige Wahl sein. In Anbetracht der Auswahl und sich ergebenden neuen Möglichkeiten, finde ich das nicht sonderlich teuer. Aktuell verwende ich für Überschriften &#8222;Adelle&#8220; und im Fließtext &#8222;Droid Sans&#8220;.</p>
+
+<p>Zum Schluss noch etwas Werbung bzw. die Erklärung für die Überschrift:</p>
+
+<p>Ich kümmere mich ja bereits seit Jahren um die technische Seite von <a href="http://www.piadettmer.de/" target="_blank">Pias Weblog</a>. Bisher lief alles über die FTP-Veröffentlichung von Blogger. Anfang des Jahres kündigte Google an, diese Funktion zum 1. Mai 2010 einzustellen. Betroffenen wird ein Umzug auf Blogspot mit eigener Domain empfohlen. An sich eine brauchbare Lösung, wenn man dafür nicht die DNS-Einträge der Domain in einem Umfang ändern müsste, den kaum ein großer Hosting-Anbieter erlaubt. Daher haben wir uns für einen Umzug auf WordPress entschieden.</p>
+
+<p>Da Pia gerne und viel fotografiert, haben wir gleich noch ein zweites WordPress als <a href="http://fotografie.piadettmer.de/" target="_blank">Foto-Blog</a> eingerichtet. Momentan sind noch nicht so viele Bilder online, aber ein Blick lohnt sich definitiv jetzt schon!</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2010/02/unlust.html" class="post__headline__link">Unlust</a></h1>
+    <p class="post__meta">
+        <time datetime="2010-02-16T20:54:03Z" class="post-date">16. February 2010</time>
+    </p>
+    <div class="post__content">
+        <p>Bitte weitergehen.</p>
+
+<p>WEITERGEHEN!</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2010/01/setzen-6.html" class="post__headline__link">Setzen, 6!</a></h1>
+    <p class="post__meta">
+        <time datetime="2010-01-16T17:00:50Z" class="post-date">16. January 2010</time>
+    </p>
+    <div class="post__content">
+        <p>**Warnung: wer Season 4 und The Final Season von Battlestar Galactica nicht kennt, sollte nicht weiterleisen! Die deutschen Titel enthalten einen massiven Spoiler.</p>
+
+<p>**</p>
+
+<p>Ab dem 24. Februar wird RTL 2 die vierte Staffel von Battlestar Galactica ausstrahlen. Wie gewohnt natürlich wieder auf einem schlechten Sendeplatz und in SD. Als wäre es nicht schlimm genug, die Serie damit zu verschandeln, haben die Übersetzer diesmal ganze Arbeit geleistet.</p>
+
+<p>Hier die übersetzten Titel der Folgen:</p>
+
+<p>&#8222;Auf Messers Schneide&#8220; – &#8222;Razor&#8220; (Movie-Special)</p>
+
+<p>&#8222;Auferstehung&#8220; – &#8222;He that believeth in me&#8220;</p>
+
+<p>&#8222;Die letzten Fünf&#8220; – &#8222;Six of One&#8220;</p>
+
+<p>&#8222;Die Verblendeten&#8220; – &#8222;The Ties That Bind&#8220;</p>
+
+<p>&#8222;Perfekter Schmerz&#8220; – &#8222;Escape Velocity&#8220;</p>
+
+<p>&#8222;Meuterei im All&#8220; – &#8222;The Road Less Traveled&#8220;</p>
+
+<p>&#8222;Ans andere Ufer&#8220; – &#8222;Faith&#8220;</p>
+
+<p>&#8222;Rat mal, was zum Essen kommt&#8220; – &#8222;Guess what&#8217;s coming to dinner&#8220;</p>
+
+<p>&#8222;Sine Qua Non&#8220; – &#8222;Sine Qua Non&#8220;</p>
+
+<p>&#8222;Wir alle sind sterblich&#8220;– &#8222;The Hub&#8220;</p>
+
+<p>&#8222;Zur Erde!&#8220; – &#8222;Revelations&#8220;</p>
+
+<p>&#8222;Die Strömung erledigt den Rest&#8220; – &#8222;Sometimes a great Notion&#8220;</p>
+
+<p>&#8222;Erschöpfung&#8220; – &#8222;A Disquiet Follows My Soul&#8220;</p>
+
+<p>&#8222;Die Lunte brennt&#8220; – &#8222;The Oath&#8220;</p>
+
+<p>&#8222;Blut in der Waagschale&#8220; – &#8222;Blood on the Scales&#8220;</p>
+
+<p>&#8222;Das verlorene Paradies&#8220; – &#8222;No Exit&#8220;</p>
+
+<p>&#8222;Systemblockade&#8220; – &#8222;Deadlock&#8220;</p>
+
+<p>&#8222;Der Pianomann&#8220; – &#8222;Someone to Watch Over Me&#8220;</p>
+
+<p>&#8222;Gestrandet in den Sternen&#8220; – &#8222;Islanded in a Stream of Stars&#8220;</p>
+
+<p>&#8222;Götterdämmerung, Teil 1&#8220; – &#8222;Daybreak, Part I&#8220;</p>
+
+<p>&#8222;Götterdämmerung, Teil 2+3&#8220; – &#8222;Daybreak, Part II + III&#8220;</p>
+
+<p>Zugegeben, sie lassen sich nur schwer vernünftig übersetzen, aber man hätte es zumindest versuchen können. Noch schlimmer ist aber, dass die deutschen Titel heftige Spoiler enthalten.</p>
+
+<p>[Nostalgia Critic]ARE YOU FUCKING MAD?[/Nostalgia Critic]</p>
+
+<p>Was soll man dazu sonst noch sagen?</p>
+
+    </div>
+</article>
+ 
+            
+
+            
+  <div class="pagination">
+    <div class="pagination__item pagination__item-position-prev">
+      
+        <a href="https://madcatswelt.org/page/2/" class="pagination__link">&larr; vorherige Einträge</a>
+      
+    </div>
+    <div class="pagination__item pagination__item-position-next">
+        
+          <a href="https://madcatswelt.org/page/4/" class="pagination__link">nächste Einträge &rarr;</a>
+        
+    </div>
+  </div>
+
+
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

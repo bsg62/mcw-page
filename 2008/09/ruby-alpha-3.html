@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ruby Alpha 3</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/09/ruby-alpha-3.html" class="post__headline__link">Ruby Alpha 3</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-09-14T19:44:51Z" class="post-date">14. September 2008</time>
+    </p>
+    <div class="post__content">
+        <p><strong>Änderungen gegenüber der Alpha 2:</strong></p>
+
+<ul>
+<li>Klasse Config:
+
+<ol>
+<li>Methode <em>delVar()</em> entfernt</li>
+<li>Methode <em>delete()</em> hinzufügt:<br />
+Vereinheitlicht das Namensschema und ist in der Lage mehrere Konfigurationsvariablen auf einmal zu löschen.</li>
+<li>Magische Methode __<em>toString()</em> implementiert.<br />
+Gibt alle gespeicherten Konfigurationsvariablen mittels _print<em>r()</em> zurück.</li>
+<li>Magische Methode __<em>get()</em> gibt nun eine Fehlermeldung zurück, wenn auf eine nicht verfügbare Konfigurationsvariable zugegriffen wird.</li>
+<li>Konfigurationsvariablen <em>ScriptName</em>, <em>ScriptDir</em>, <em>ScriptRoot</em>, <em>ScriptURL</em>, <em>TemplateDir</em>, <em>TemplateURL</em>, <em>TemplateName</em>, <em>TemplateDateFormat</em>, <em>TemplateTimeFormat</em> und <em>TemplateDateTimeFormat</em> wurden in die Unterobjekte <em>script</em> und <em>template</em> der Klasse Data zugeorndet. Die Präfixe <em>Template</em> und <em>Script</em> entfallen. Außerdem beginnen die Eigenschaften alle mit Kleinbuchstaben.</li>
+</ol></li>
+<li>Klasse MySmarty:
+
+<ol>
+<li>Es ist nicht länger notwendig, die Smarty-Methoden <em>assign()</em> und <em>assign_by_ref()</em> zu verwenden, um Smarty Variablen zuzuweisen. Stattdessen wird über die magischen Methoden __<em>get()</em> und __<em>set()</em> dem Smarty-Objekt der entsprechende Wert übergeben.</li>
+<li>Magische Methoden __<em>get()</em>, __<em>set()</em>, __<em>isset()</em> und __<em>unset()</em> implementiert.<br />
+Ermöglichen og. Vereinfachungen, um Smarty mit Variablen zu füttern.</li>
+</ol></li>
+<li>Vereinheitlichtes Namensschema aller Konfigurationsvariablen entsprechend og. Änderungen zu Kleinbuchstaben am Namensbeginn.</li>
+<li>Vereinheitlichte Klassennamen im Core-System.</li>
+<li>Datenbankschnittstelle über PDO hinzugefügt, Ausnahmen werden über die Klasse PDOException statt DbException gehandhabt.</li>
+<li>Die verfügbaren Datenbankschnittstellen MySQL, MySQLi und PDO lassen sich über die Konfigurationsdatei anwählen.</li>
+<li>Markup-Vereinfachungen im Standard-Layout</li>
+<li>Update auf Smarty 2.6.20 und jQuery 1.2.6</li>
+<li>Anpassungen aller Klassen und Templates an das neue Namensschema und Smarty-Variablen-Handling.</li>
+<li>Funktion _json<em>encode()</em> wird hinzugefügt, falls PHP 5.2 ohne JSON-Erweiterung kompiliert wurde.</li>
+<li>Grundsätzliche Funktionalität, um falsch als Spam oder Ham erkannte Kommentare an Akismet zu melden.</li>
+<li>Weitere kleine Optimierungen und Vereinfachungen der Core- und Modul-Klassen.</li>
+</ul>
+
+<p><strong>Geplante Änderungen bis zur ersten Beta-Version:</strong></p>
+
+<ul>
+<li>Wegfall der normalen MySQL-Schnittstelle und Unterstützung für MySQL 4.1.</li>
+<li>Absicherung über vorbereitete SQL-Abfragen mittels der Methode <em>prepare()</em> von MySQLi bzw. PDO.</li>
+<li>Namespaces für den Core und die Module, sofern PHP 5.3 verfügbar ist.</li>
+<li>Admin-Bereich für Kategorien/Tags, Kommentare, Bilder, Texte und Konfigurations-Verwaltung.</li>
+<li>Neues Tag- und Kategorie-Handling im Admin-Bereich.</li>
+<li>Spam-Schutz ohne Akismet und Captchas.</li>
+<li>Module Texts und Images implementieren.</li>
+<li>Multi-Weblog-Unterstützung über mehrere Domains hinweg.</li>
+<li>_json<em>encode()</em> durch <em>Zend_Json_Encoder::encode()</em> ersetzen.</li>
+</ul>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

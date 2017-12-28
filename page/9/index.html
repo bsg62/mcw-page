@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="generator" content="Hugo 0.31.1" />
+    <title>madcats[welt]</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/07/dumm-gelaufen.html" class="post__headline__link">Dumm gelaufen</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-07-31T18:56:00Z" class="post-date">31. July 2008</time>
+    </p>
+    <div class="post__content">
+        <p>Da bastelt man sich einen neuen Admin-Bereich, um die Einträge nicht über <a href="http://www.phpmyadmin.net/">phpMyAdmin</a> schreiben zu müssen und dann fällt einen kaum noch was ein.</p>
+
+<p>Wie <a href="http://www.kaliban.org/">Herr Kaliban</a> immer sagt: »Mein Blog-Fu ist schwach in diesen Tagen.«</p>
+
+<p>Liegt vermutlich an der Hitze. Vielleicht sollte ich auf eine Kühlung mit flüssigem Helium umsteigen oder nach Spitzbergen umziehen. Dort liegt die Durchschnittstemperatur im Juli bei + 5,7° C.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/06/how-about-some-action.html" class="post__headline__link">How about some action?</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-06-23T18:53:25Z" class="post-date">23. June 2008</time>
+    </p>
+    <div class="post__content">
+        <p><a href="http://www.frankklepacki.com/">Frank Klepacki</a> schreibt den Soundtrack zu C&amp;C Red Alert 3. Die verdammt beste Nachricht des Tages. Ohne seine Musik wäre es einfach kein richtiges Command &amp; Conquer.</p>
+
+<p>Danke EA, dass Ihr ihn anbord geholt habt!</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/06/spas-mit-jquery.html" class="post__headline__link">Spaß mit jQuery</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-06-19T00:35:18Z" class="post-date">19. June 2008</time>
+    </p>
+    <div class="post__content">
+        <p>Das letzte meiner <a href="2008/06/jquery-beispiele.html">jQuery-Beispiele</a> beschäftigt sich ja damit, externen Links ein Icon und target=&#8220;_blank&#8220; zu verpassen. Mit allem drum und dran umfasst die Funktion zehn Zeilen Code. Dank ein paar Tricks und der wunderbaren CSS-Selektor-Syntax, geht das ganze aber auch in einer einzigen Zeile:</p>
+
+<pre name="code" class="js">$('#content .post a:not([href^="' + $('base').attr('href') + '"])[href^="http://"]').css('background', 'url(' + templateURL + 'img/shape_move_forwards.png) no-repeat right 1px').css('padding-right', '20px').attr('title', 'Externer Link').attr('target', '_blank');</pre>
+
+<p>Es werden also alle a-Element der Klasse &#8222;post&#8220; innerhalb der ID &#8222;content&#8220; angewählt, die nicht mit der Basis-URL, aber dafür mit &#8222;http://&#8220; beginnen. So wird sichergestellt, dass alle externen Links erwischt werden, aber z.B. relative interne Links (die <a href="http://tinymce.moxiecode.com/">TinyMCE</a> gerne macht) oder ID-Aufrufe nicht betroffen sind.</p>
+
+<p>Allen betroffenen Elementen wird nun das Icon als Hintergrundbild zugewiesen, ein entsprechendes Padding gesetzt, sowie das title- und target-Attribut.</p>
+
+<p>Mit einer so effizienten und gleichzeitig einfachten Syntax zu arbeiten, macht einfach Spaß. Und so lange diese CSS-Selektoren noch nicht vollständig implementiert sind, hilft jQuery browser-unabhängig aus.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/06/mozparty-time-part-4.html" class="post__headline__link">Mozparty-Time Part 4</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-06-17T15:39:47Z" class="post-date">17. June 2008</time>
+    </p>
+    <div class="post__content">
+        <p style="text-align: center;">
+  <img title="Mozilla Firefox 3.0" src="https://www.madcatswelt.org/wp-content/uploads/firefox3final.png" alt="Mozilla Firefox 3.0" />
+</p>
+
+<p style="text-align: left;">
+  Mozilla.org nahm sich viel Zeit für Firefox 3, aber das Warten hat sich gelohnt. Dem Gecko-Build nach, scheint unter Windows der Release Candidate 2 die finale Version zu sein. Momentan ist er noch nicht offiziell erhältlich, aber wie üblich befindet sich eine neue Version schon Stunden vorher auf dem Mozilla-FTP-Server.
+</p>
+
+<p style="text-align: left;">
+  <a href="2008/02/firefox-3.html">Mehr über die Neuerungen in Firefox 3, findet Ihr hier.</a>
+</p>
+
+<p style="text-align: left;">
+  Und im Gegensatz zum Release von Firefox 2, haben viele Entwickler die Beta- und RC-Phase genutzt und ihre Extensions angepasst.
+</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/06/todliche-dateisysteme.html" class="post__headline__link">Tödliche Dateisysteme</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-06-16T22:45:31Z" class="post-date">16. June 2008</time>
+    </p>
+    <div class="post__content">
+        <p>Der Feature-Vergleich von Dateisystemen beschränkt sich ja normalerweise auf Dinge wie Journaling, Verschlüsselung, Hard Links, Soft Links usw. In der englischen Wikipedia hat man dagegen noch eine weitere, weniger verbreitete Funktion aufgelistet:</p>
+
+<p><a href="http://en.wikipedia.org/w/index.php?title=Comparison_of_file_systems&amp;oldid=209063556#Features">Murders your wife</a>*</p>
+
+<p><span style="font-size: xx-small;">* <a href="http://de.wikipedia.org/wiki/Hans_Reiser_(Entwickler)">Hans Reiser</a>, der Entwickler von ReiserFS, wurde Ende April für schuldig befunden seine Frau ermordet zu haben.</span></p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/06/jquery-beispiele.html" class="post__headline__link">jQuery-Beispiele</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-06-15T22:00:00Z" class="post-date">15. June 2008</time>
+    </p>
+    <div class="post__content">
+        <p>Es gibt zwar viele Javascript-Frameworks, aber sowohl privat als auch im Büro bevorzuge ich <a href="http://jquery.com/">jQuery</a>. Mit knapp 31 KB (gepackt) ist es schön klein, nicht überladen und inzwischen auch recht flott. Der größte Vorteil ist aber, dass der Zugriff auf die DOM-Objekte über die CSS-Syntax erfolgt &#8211; und auch mit den Selektoren, die z.B. der Internet Explorer nicht unterstützt.</p>
+
+<p>Anhand von ein paar Code-Zeilen, die ich hier im Blog verwende, wird klar wie simpel, aber auch mächtig jQuery ist.</p>
+
+<p>Grundsätzlich befinden sich alle Funktionen in der jQuery-Methode ready(), die auf das gesamte DOM angewandt wird. Dabei werden die Elemente schon manipuilert, sobald der DOM-Baum fertig geladen ist und nicht erst, wie beim Event onload(), wenn alles geladen wurde.</p>
+
+<pre name="code" class="js">$(document).ready(function() {<br />    Code &#8230;<br />});<br /></pre>
+
+<p>jQuery bietet ein eigenes Event-Handling an, das es über die CSS-Syntax ermöglicht Events an DOM-Elemente zu hängen. Als Beispiel fungiert hier das Abschicken eines Textfeldes beim Druck auf Enter.</p>
+
+<pre name="code" class="js">$('form input[type="text"]').keyup(function(event) {<br />  if(event.keyCode == 13) {<br />     $(this).parents('form').submit();<br /> }<br />});<br /></pre>
+
+<p>Damit wird an jedes Textfeld das Event keyup() gebunden und beim Druck auf Enter das übergeordnete Formular abgeschickt.</p>
+
+<p>Als zweites Beispiel dient die automatische Erkennung, ob ein Link innerhalb eines Blog-Eintrags auf eine externe Seite verweist und falls ja, automatisch das Attribut target auf &#8222;_blank&#8220; gesetzt wird, sowie dem a-Elemet ein Bild für eine entsprechende Kennzeichnung als externer Link anhängt wird.</p>
+
+<pre name="code" class="js">$('#content .post a').each(function() {<br />   if($(this).attr('href').indexOf($('base').attr('href')) == -1 <br />         && $(this).attr('href') != '#' && $(this).children('img').length == 0 <br />        && $(this).attr('href').indexOf('javascript:') == -1) {<br />      <br />      $(this).attr('title', 'Externer Link').attr('target', '_blank');<br />      $(this).after(' <a title="Externer Link" href="' + $(this).attr('href') + '" target="_blank"><img style="vertical-align: middle;" src="' + templateURL + 'img/shape_move_forwards.png" alt="External link" /></a>');<br />  }<br />});<br /></pre>
+
+<p>&#8222;$(this)&#8220; steht für aktuelle Element des each-Durchlaufs. Es handelt sich dabei aber um ein jQuery-Objekt, das z.B. nicht alle DOM-Methoden erlaubt. In einer each-Schleife ist aber auch der Zugriff auf das DOM-Element über &#8222;this&#8220; möglich.</p>
+
+<p>Die If-Bedingung prüft, ob die verlinkte URL zur eigenen Seite gehört, ob sie einen Anker-Aufruf enthält oder Javascript-Code ausführt. Trifft nichts von dem zu, werden die Attribute &#8222;title&#8220; und &#8222;target&#8220; gesetzt. Solche Verkettungen sind möglich, weil jede manipulierende jQuery-Methode eine Referenz auf das bearbeitete Objekt zurückgibt. Danach wird dem a-Element ein weiteres a anhängt, das die Bild-Kennzeichnung für einen externen Link enthält.</p>
+
+<p>Zu guter letzt noch ein Einzeiler, der ein Problem mit dem Syntax Highlighter löst. Aus Kompatibilitätsgründen zu älteren Einträgen bin ich leider gezwungen, jeden Text durch die PHP-Funktion nl2br() zu schicken, um Zeilenumbrüche in br-Elemente ersetzen zu lassen. Bei Code-Ausschnitten in pre-Elementen ergibt sich dabei ein Problem, weil entweder das br-Element als Text am jeder Zeile anzeigt wird oder sogar umgebrochen wird und somit zig überflüssige Leerzeilen vorhanden sind.</p>
+
+<pre name="code" class="js">$('pre[name="code"] br').remove();</pre>
+
+<p>Damit werden alle br-Elemente entfernt und die Code-Ansicht ist sauber. Sicherlich hätte man das ganze auch gleich serverseitig lösen können, aber wozu sich mit regulären Ausdrücken rumquälen, wenn eine Zeile Javascript ausreicht?</p>
+
+<p>Ich hoffe, dass meine Beispiele halbwegs verständlich sind und der ein oder andere, sich entschließt jQuery eine Chance zu geben &#8211; es lohnt sich!</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/06/design-und-lizenz.html" class="post__headline__link">Design und Lizenz</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-06-15T16:37:00Z" class="post-date">15. June 2008</time>
+    </p>
+    <div class="post__content">
+        <p><strong>Ein paar kleine Änderungen:</strong></p>
+
+<ol>
+<li>Die Schriftgrößen wurden reduziert:
+
+<ul>
+<li>Kopfbereich von 80 auf 50 Pixel, um weniger erschlagend zu wirken.</li>
+<li>Überschriften von 2 auf 1.7 em.</li>
+<li>Fließtext von 14 auf 13 Pixel.</li>
+</ul></li>
+<li>Die Tags wurden aus der Sidebar in den Footer verlagert. Dort ist in der Breite wesentlich mehr Platz und die Sidebar ist nicht mehr so überfrachtet.</li>
+<li>Alle Inhalte von madcatswelt.org stehen ab sofort unter der <a href="http://creativecommons.org/licenses/by-sa/3.0/deed.de">Creative Commons 3.0 Lizenz</a>.</li>
+</ol>
+
+<p><strong>Die Lizenz in Kurzform:</strong></p>
+
+<ol>
+<li>Wenn Ihr Inhalte von mir verwendet, muss mein Name genannt werden. Ein einfacher Link mit Namen reicht vollkommen aus.</li>
+<li>Falls Ihr etwas an meinem Inhalten ändert, muss die Weitergabe unter derselben oder einer vergleichbaren Lizenz erfolgen.</li>
+</ol>
+
+<p><strong>Warum eine Lizenz?</strong></p>
+
+<p>Ich plane in Zukunft mehr über PHP bzw. Webentwicklung mit entsprechenden Code-Beispielen zu schreiben, daher halte ich eine Lizenz für sinnvoll. Die Creative Commons 3.0 Lizenz erscheint mir hierfür am besten geeignet, da sie nur zwei einfache Bedingungen hat und dafür sorgt, dass der Code auch weiterhin frei verfügbar ist.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/06/opendns.html" class="post__headline__link">OpenDNS</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-06-14T22:00:00Z" class="post-date">14. June 2008</time>
+    </p>
+    <div class="post__content">
+        <p>Nachdem es in letzter Zeit immer wieder zu Problemen mit den DNS-Servern von Kabel Deutschland (KDG) kam, entschloss ich mich gestern <a href="http://www.opendns.com/">OpenDNS</a> eine Chance zu geben. Bisher hat sich der Wechsel gelohnt. Die Antwortzeiten von OpenDNS sind wesentlich kürzer und erhöhen damit die Surfgeschwindigkeit tatsächlich. Dazu ist das Netzwerk nahezu ausfallsicher über zwei Kontinente aufgebaut.</p>
+
+<p>Leider haben die KDG-DNS-Server immer wieder Probleme, dass die Auflösung mancher Domains grundlos fehlschlägt und wie oben schon erwähnt, sind sie nicht gerade die schnellsten.</p>
+
+<p>OpenDNS ist kostenlos und finanziert sich über Werbung. Wenn eine Domain nicht gefunden werden kann, wird man auf eine Seite von OpenDNS weitergeleitet, die wie Google kontextbezogene Werbung einsetzt und Alternativorschläge zur nicht gefundenen Domain macht &#8211; dieses Verhalten lässt sich aber abschalten.</p>
+
+<p>Dazu gibt es verschiedene Services wie Statistiken, White List, Black List, automisches Blocken bestimmter Seitengruppen (Phishing-Seiten, Porno-Seiten, illegale Seiten &#8230;), Tippfehlerkorrektur, Abkürzungen (gs für gamestar.de z.B.) etc.</p>
+
+<p>Diese Dienste werden über einen Account bereitgestellt, in dem man einfach seine aktuelle IP angibt. Für Provider mit dynamischer IP-Vergabe, gibt es Programme, die regelmäßig die momentane IP an das OpenDNS-Konto senden.</p>
+
+<p>Hier liegt auch der Knackpunkt am System. Theoretisch ist OpenDNS damit in der Lage, Profile des Surfverhaltens zu erstellen und damit Geld zu verdienen. Wobei versichert wird, dass das nicht passiert und die Statistikfunktionen wie auch alle anderen Möglichkeiten freiwillig sind.</p>
+
+<p>Da der Account aber genauso freiwillig ist, sehe ich kein großes Problem darin. Letztendlich muss es jeder selbst entscheiden. Ich sehe jedenfalls mehr Vor- als Nachteile und bereue den Wechsel nicht.</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/05/wasserstand-mai.html" class="post__headline__link">Wasserstand Mai</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-05-30T22:00:00Z" class="post-date">30. May 2008</time>
+    </p>
+    <div class="post__content">
+        <p>DVDs: Star Trek Enterprise Season 4</p>
+
+<p>Buch: Drew Karpyshyn &#8211; Darth Bane: Path of Destruction</p>
+
+<p>iTunes: Billy Talent &#8211; Red Flag</p>
+
+<p>Spiele: The Witcher, Warhammer 40.000: Dawn of War &#8211; Soulstorm</p>
+
+    </div>
+</article>
+ 
+             
+                <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/04/mal-wieder-ein-test.html" class="post__headline__link">Mal wieder ein Test …</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-04-20T14:01:55Z" class="post-date">20. April 2008</time>
+    </p>
+    <div class="post__content">
+        <table border="0" width="100%" align="center">
+  <tr>
+    <td>
+    </td>
+    
+    <td rowspan="12">
+      <a href="http://which-film-hero.are-you-really.com/" target="_blank"><img src="http://quel-heros-de-film.es-tu.com/images/elements/2.jpg" border="0" alt="" /></a>
+    </td>
+  </tr>
+  
+  <tr>
+    <td style="font-weight:bold;">
+      James Bond: 70%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Tony Montana (Scarface): 69%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Hannibal Lecter: 69%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Neo (Matrix): 66%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Batman/Bruce Wayne: 63%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Shrek: 61%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Maximus (Gladiator): 61%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Jim Levenstein (American Pie): 59%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Indiana Jones: 58%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Yoda (Star Wars): 57%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Eric Draven (The Crow): 57%
+    </td>
+  </tr>
+  
+  <tr>
+    <td>
+      Forrest Gump: 51%
+    </td>
+  </tr>
+</table>
+
+<p><a href="http://quel-heros-de-film.es-tu.com">Which film hero are you?</a></p>
+
+<p>Eigentlich alles okay, aber Jim aus American Pie? Das geht gar nicht. Ich ziehe dann doch Frauen vor, Apfelkuchen sind zum Essen da &#8230;</p>
+
+    </div>
+</article>
+ 
+            
+
+            
+  <div class="pagination">
+    <div class="pagination__item pagination__item-position-prev">
+      
+        <a href="https://madcatswelt.org/page/8/" class="pagination__link">&larr; vorherige Einträge</a>
+      
+    </div>
+    <div class="pagination__item pagination__item-position-next">
+        
+          <a href="https://madcatswelt.org/page/10/" class="pagination__link">nächste Einträge &rarr;</a>
+        
+    </div>
+  </div>
+
+
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>

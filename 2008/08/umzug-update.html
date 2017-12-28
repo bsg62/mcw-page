@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Umzug (Update)</title>
+    <link href="//fonts.googleapis.com/css?family=Roboto:400,400italic,500,700,700italic" rel="stylesheet" type="text/css">
+    <link href="//fonts.googleapis.com/css?family=Droid+Sans+Mono" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://madcatswelt.org/css/mcw.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+    <meta charset="UTF-8">
+</head>
+
+<body>
+    <header class="header">
+    <div class="container container_state_nav">
+        <nav>
+            <ul class="nav-menu">
+                <li class="nav-menu__item"><a href="https://madcatswelt.org/" class="nav-menu__item__link nav-menu__item__link_state_current">weblog</a></li>
+            </ul>
+        </nav>
+        <p class="header__title">
+            <a href="https://madcatswelt.org/" class="header__title__link">madcats[welt]</a>
+        </p>
+    </div>
+</header>
+
+    <div class="container container_state_main">
+        <main class="content">
+            <article class="post">
+    <h1 class="post__headline"><a href="https://madcatswelt.org/2008/08/umzug-update.html" class="post__headline__link">Umzug (Update)</a></h1>
+    <p class="post__meta">
+        <time datetime="2008-08-26T16:01:01Z" class="post-date">26. August 2008</time>
+    </p>
+    <div class="post__content">
+        <p>So, der Umzug ist überstanden. Bei den meisten sollten die DNS-Einträge schon aktualisiert sein.</p>
+
+<p>Dank der neuen Server, läuft nun alles mit MySQL 5. Daher kann ich nun endlich Views (für die zukünftige Multi-Weblog-Funktion) auch außerhalb meiner lokalen Entwicklungsumgebung nutzen, sowie auf MySQLi als objektorientierte Schnittstelle für die Datenbank-Anbindung zurückgreifen.</p>
+
+<p>Letzteres ermöglicht auch ein neues Sicherheitsfeature, das ich momentan in einer alternativen Version zum Testen einsetze: mysqli::prepare(). Damit werden die Werte über einen Platzhalter in die SQL-Abfrage eingefügt und vorher auf Datentyp bzw. SQL-Injections geprüft.</p>
+
+<p>Leider müssen dafür sämtliche Models komplett umgestellt werden, da die Werte nicht mehr direkt in die Abfrage geschrieben werden.</p>
+
+    </div>
+</article>
+
+        </main>
+    </div>
+    <footer class="footer">
+    <div class="container">
+        <ul class="footer__menu">
+            <li class="footer__menu__item"><a href="https://gohugo.io/" class="footer__menu__item__link">Hugo</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script>
+window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+ga('create', 'UA-1711787-1', 'auto');
+ga('send', 'pageview');
+</script>
+<script async src='//www.google-analytics.com/analytics.js'></script>
+
+
+</body>
+
+</html>
